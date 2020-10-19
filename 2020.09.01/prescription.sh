@@ -23,9 +23,7 @@ run() {
     elif [[ "${stage}" == "WORKFLOW" ]]; then
         loadWorkflow "${ARGS[@]}"
     else
-        printf '\e[31m%s\e[0m\n' "Invalid Stage"
-        printf '\e[31m%s\e[0m\n' "Exited with error code 1"
-        exit 1
+        exit_program "Invalid Stage"
     fi
 }
 
@@ -176,9 +174,7 @@ function getPrescription() {
         echo $prescrip
         echo $prescrip >>result.json
     else
-        printf '\e[31m%s\e[0m\n' "Invalid Files"
-        printf '\e[31m%s\e[0m\n' "Exited with error code 1"
-        exit 1
+        exit_program "Invalid Files"
     fi
 
     echo "::set-output name=sastScan::$(ruby -rjson -e 'j = JSON.parse(File.read("result.json")); puts j["security"]["activities"]["sast"]["enabled"]')"
@@ -196,17 +192,14 @@ function validate_values () {
     key=$1
     value=$2
     if [ -z "$value" ]; then
-        printf '\e[31m%s\e[0m\n' "$key value is null"
-        printf '\e[31m%s\e[0m\n' "Exited with error code 1"
-        exit 1
+        exit_program "$key value is null"
     fi
 }
 
 function is_io_manifest_present () {
     if [ ! -f "ApplicationManifest.yml" ]; then
-        printf '\e[31m%s\e[0m\n' "ApplicationManifest.yml file does not exist"
-        printf '\e[31m%s\e[0m\n' "Exited with error code 1"
-        exit 1
+        exit_program "ApplicationManifest.yml file does not exist"
+		
     fi
     if [ ! -f "SecurityManifest.yml" ]; then
         printf "SecurityManifest.yml file does not exist\n"
@@ -217,9 +210,7 @@ function is_io_manifest_present () {
 
 function is_workflow_manifest_present () {
     if [ ! -f "ApplicationManifest.yml" ]; then
-        printf '\e[31m%s\e[0m\n' "ApplicationManifest.yml file does not exist"
-        printf '\e[31m%s\e[0m\n' "Exited with error code 1"
-        exit 1
+        exit_program "ApplicationManifest.yml file does not exist"
     fi
     if [ ! -f "WorkflowTemplate.yml" ]; then
         printf "WorkflowTemplate.yml file does not exist\n"
@@ -255,6 +246,13 @@ function box_star () {
     for i in $(seq $len); do box_str="$box_str*"; done;
     box_str="$box_str\n\n"
     printf "$box_str"
+}
+
+function exit_program () {
+    message=$1
+    printf '\e[31m%s\e[0m\n' "$message"
+    printf '\e[31m%s\e[0m\n' "Exited with error code 1"
+    exit 1
 }
 
 ARGS=("$@")
