@@ -1,7 +1,7 @@
 #!/bin/bash
 
 run() {
-    box_line "Synopsys Intelligent Security Scan" "Copyright Ã‚Â© 2016-2020 Synopsys, Inc. All rights reserved worldwide."
+    box_line "Synopsys Intelligent Security Scan" "Copyright © 2016-2020 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
 
     for i in "${ARGS[@]}"; do
