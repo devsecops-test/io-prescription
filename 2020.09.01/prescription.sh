@@ -198,8 +198,7 @@ function validate_values () {
 
 function is_io_manifest_present () {
     if [ ! -f "ApplicationManifest.yml" ]; then
-        exit_program "ApplicationManifest.yml file does not exist"
-		
+        exit_program "ApplicationManifest.yml file does not exist"	
     fi
     if [ ! -f "SecurityManifest.yml" ]; then
         printf "SecurityManifest.yml file does not exist\n"
