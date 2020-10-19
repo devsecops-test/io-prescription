@@ -23,7 +23,9 @@ run() {
     elif [[ "${stage}" == "WORKFLOW" ]]; then
         loadWorkflow "${ARGS[@]}"
     else
-        echo "Invalid Stage"
+        printf '\e[31m%s\e[0m\n' "Invalid Stage"
+        printf '\e[31m%s\e[0m\n' "Exited with error code 1"
+        exit 1
     fi
 }
 
@@ -174,7 +176,8 @@ function getPrescription() {
         echo $prescrip
         echo $prescrip >>result.json
     else
-        echo "Invalid Files"
+        printf '\e[31m%s\e[0m\n' "Invalid Files"
+        printf '\e[31m%s\e[0m\n' "Exited with error code 1"
         exit 1
     fi
 
