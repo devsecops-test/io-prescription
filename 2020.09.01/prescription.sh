@@ -14,8 +14,7 @@ run() {
 	
     #validate stage
     validate_values "STAGE" "$stage"
-	
-    echo ""
+
     box_star "Current Stage is set to ${stage}"
     
     if [[ "${stage}" == "IO" ]]; then
@@ -47,17 +46,17 @@ function loadWorkflow() {
         --bitbucket.commit.id=*) bitbucket_commit_id="${i#*=}" ;;
         --bitbucket.username=*) bitbucket_username="${i#*=}" ;;
         --bitbucket.password=*) bitbucket_password="${i#*=}" ;;
-        --github.owner.name=*) github_owner_name="${i#*=}" ;;    #github
+        --github.owner.name=*) github_owner_name="${i#*=}" ;;         #github
         --github.repository.name=*) github_repo_name="${i#*=}" ;;
         --github.ref=*) github_ref="${i#*=}" ;;
         --github.commit.id=*) github_commit_id="${i#*=}" ;;
         --github.username=*) github_username="${i#*=}" ;;
         --github.token=*) github_access_token="${i#*=}" ;;
-        --IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;    #polaris
+        --IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
         --polaris.project.name=*) polaris_project_name="${i#*=}" ;;
-		--polaris.url=*) polaris_server_url="${i#*=}" ;;
+        --polaris.url=*) polaris_server_url="${i#*=}" ;;
         --polaris.token=*) polaris_access_token="${i#*=}" ;;
-        --IS_SCA_ENABLED=*) is_sca_enabled="${i#*=}" ;;     #blackduck
+        --IS_SCA_ENABLED=*) is_sca_enabled="${i#*=}" ;;                 #blackduck
         --blackduck.project.name=*) blackduck_project_name="${i#*=}" ;;
         --blackduck.url=*) blackduck_server_url="${i#*=}" ;;
         --blackduck.api.token=*) blackduck_access_token="${i#*=}" ;;
@@ -239,7 +238,7 @@ function box_line () {
 function box_star () {
     str="$@"
     len=$((${#str}+4))
-    box_str="\n"
+    box_str="\n\n"
     for i in $(seq $len); do box_str="$box_str*"; done;
     box_str="$box_str\n* "$str" *\n"
     for i in $(seq $len); do box_str="$box_str*"; done;
