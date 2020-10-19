@@ -1,0 +1,78 @@
+---
+connectors:
+- connector_name: slack
+  fields:
+    channelidentifier: <<SLACK_CHANNEL_ID>>
+    bearertoken: <<SLACK_TOKEN>>
+- connector_name: jira
+  fields:
+    issuetype: Bug
+    projectkey: <<JIRA_PROJECT_KEY>>
+    assignee: <<JIRA_ASSIGNEE>>
+    url: <<JIRA_SERVER_URL>>
+    username: <<JIRA_USERNAME>>
+    authtoken: <<JIRA_AUTH_TOKEN>>
+- connector_name: bitbucket
+  fields:
+    workspace_name: <<BITBUCKET_WORKSPACE_NAME>>
+    repository_name: <<BITBUCKET_REPO_NAME>>
+    commit_id: <<BITBUCKET_COMMIT_ID>>
+    username: <<BITBUCKET_USERNAME>>
+    app_password: <<BITBUCKET_PASSWORD>>
+- connector_name: github
+  fields:
+    file_path: workflowengine-results.sarif.json
+    owner_name: <<GITHUB_OWNER_NAME>>
+    repository_name: <<GITHUB_REPO_NAME>>
+    ref: <<GITHUB_REF>>
+    commit_id: <<GITHUB_COMMIT_ID>>
+    username: <<GITHUB_USERNAME>>
+    accesstoken: <<GITHUB_ACCESS_TOKEN>>
+---
+buildbreaker:
+- activityname: sast
+  status:
+  - new
+  - open
+  overallseverity:
+  - high
+  categories:
+  - name: cross-site scripting
+    severity: high
+  - name: sql injection
+    severity: high
+- activityname: dast
+  status:
+  - new
+  - triaged
+  overallseverity:
+  - high
+  categories:
+  - name: sql-injection
+    severity: medium
+- activityname: sca
+  status:
+  - new
+  overallseverity:
+  - high
+  categories:
+  - name: cve-2015-2119
+    severity: medium
+---
+tool_information:
+- tool_name: coverity
+  enabled: false
+  fields:
+    file_path: coverity-results.json
+- tool_name: polaris
+  enabled: <<IS_SAST_ENABLED>>
+  fields:
+    project_name: <<POLARIS_PROJECT_NAME>>
+    instance_url: <<POLARIS_SERVER_URL>>
+    auth_token: <<POLARIS_ACCESS_TOKEN>>
+- tool_name: blackduck
+  enabled: <<IS_SCA_ENABLED>>
+  fields:
+    project_name: <<BLACKDUCK_PROJECT_NAME>>
+    instance_url: <<BLACKDUCK_SERVER_URL>>
+    auth_token: <<BLACKDUCK_ACCESS_TOKEN>>
