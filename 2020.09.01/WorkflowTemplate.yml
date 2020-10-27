@@ -41,15 +41,6 @@ buildbreaker:
     severity: high
   - name: sql injection
     severity: high
-- activityname: dast
-  status:
-  - new
-  - triaged
-  overallseverity:
-  - high
-  categories:
-  - name: sql-injection
-    severity: medium
 - activityname: sca
   status:
   - new
@@ -60,10 +51,6 @@ buildbreaker:
     severity: medium
 ---
 tool_information:
-- tool_name: coverity
-  enabled: false
-  fields:
-    file_path: coverity-results.json
 - tool_name: polaris
   enabled: <<IS_SAST_ENABLED>>
   fields:
