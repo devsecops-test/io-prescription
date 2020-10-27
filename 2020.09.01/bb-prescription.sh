@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 run() {
     #chosing API - persona variable validation, API will be set to "update" if persona is empty and will be "update/persona/developer" if non empty
