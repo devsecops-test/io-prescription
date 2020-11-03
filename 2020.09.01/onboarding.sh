@@ -64,17 +64,17 @@ if [ "$signupResponse" = "New user created with a token" ] ; then
             "password": '\"$password\"'
         }');
         
-		wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.09.01/ApplicationManifest_Sample.yml
-		workflow=$(cat $workflow_file | sed " s~<<IO_ASSET_ID>>~$assetId~g")
-		# apply the yml with the substituted value
-		echo "$workflow" >ApplicationManifest.yml
-		rm ApplicationManifest_Sample.yml
+        wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.09.01/ApplicationManifest_Sample.yml
+        workflow=$(cat $workflow_file | sed " s~<<IO_ASSET_ID>>~$assetId~g")
+        # apply the yml with the substituted value
+        echo "$workflow" >ApplicationManifest.yml
+        rm ApplicationManifest_Sample.yml
 		
 		echo "Save the following values for further use:"
         echo "assetId: $assetId"
         echo "IO_ACCESS_TOKEN: $userToken"
         echo "WORKFLOW_ENGINE_ACCESS_TOKEN: $workflowUserToken"
-		echo "INFO: ApplicationManifest.yml is generated. Please update the source code management details in it and add the file to the root of the project."
+        echo "INFO: ApplicationManifest.yml is generated. Please update the source code management details in it and add the file to the root of the project."
     else
         echo $onBoardingResponse;
         exit 1;
