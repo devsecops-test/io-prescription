@@ -65,7 +65,7 @@ if [ "$signupResponse" = "New user created with a token" ] ; then
         }');
         
         wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.09.01/ApplicationManifest_Sample.yml
-        workflow=$(cat $workflow_file | sed " s~<<IO_ASSET_ID>>~$assetId~g")
+        workflow=$(cat ApplicationManifest_Sample.yml | sed " s~<<IO_ASSET_ID>>~$assetId~g")
         # apply the yml with the substituted value
         echo "$workflow" >ApplicationManifest.yml
         rm ApplicationManifest_Sample.yml
