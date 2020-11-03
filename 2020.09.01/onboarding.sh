@@ -70,7 +70,7 @@ if [ "$signupResponse" = "New user created with a token" ] ; then
         echo "$workflow" >ApplicationManifest.yml
         rm ApplicationManifest_Sample.yml
 		
-		echo "Save the following values for further use:"
+        echo "Save the following values for further use:"
         echo "assetId: $assetId"
         echo "IO_ACCESS_TOKEN: $userToken"
         echo "WORKFLOW_ENGINE_ACCESS_TOKEN: $workflowUserToken"
