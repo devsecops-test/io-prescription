@@ -1,6 +1,6 @@
 application:
-  appId: <<REPOSITORY_NAME>>
-  assetId: <<UNIQUE_ASSET_NAME>>
+  appId: <<APP_ID>>
+  assetId: <<ASSET_ID>>
   appType: Webapp
   microservice: false
   projectLanguage: Java
