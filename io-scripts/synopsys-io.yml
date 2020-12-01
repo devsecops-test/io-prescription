@@ -19,7 +19,7 @@ environment:
   bitbucketPassword: <<BITBUCKET_PASSWORD>>
   bitbucketApiUrl: https://api.bitbucket.org/2.0/repositories/
   githubApiUrl: https://api.github.com/repos/
-  jiraProjectName: <<JIRA_PROJECT_NAME>>
+  jiraProjectName: <<JIRA_PROJECT_KEY>>
   jiraIssuesQuery: <<JIRA_ISSUES_QUERY>>
   jiraApiUrl: <<JIRA_API_URL>>
   jiraUserName: <<JIRA_USERNAME>>
