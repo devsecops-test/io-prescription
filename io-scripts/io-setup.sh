@@ -4,7 +4,7 @@ run()
 {  
     github_file=.github/workflows/
     bitbucket_file=bitbucket-pipelines.yml
-   
+	
     if [ -a "$github_file" ]; then
         echo "$github_file exists."
         github_pipeline
@@ -12,19 +12,43 @@ run()
         echo "$bitbucket_file exists."
         bitbucket_pipeline
     fi
+	
+    #method to generate YAML file
+    generate_yaml
 }
 
 function github_pipeline () {
-    echo "Setting up synopsys-io.yml for Github Actions"
-    wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.11/synopsys-io.yml
+    echo "Getting values from Github Actions"
 	
     github_owner_name=$(echo $GITHUB_ACTOR)
     github_repo=$(echo $GITHUB_REPOSITORY)
-    github_repo_name=$(echo $git_repo | cut -d'/' -f 2)
+    github_repo_name=$(echo $github_repo | cut -d'/' -f 2)
     github_ref=$(echo $GITHUB_REF)
-    github_branch=$(echo $git_ref | cut -d'/' -f 3)
 	
-    for i in "$@"; do
+	#variables needed to generate the YAML file
+	asset_id=$github_repo
+	scm_type=github
+	repo_owner_name=$github_owner_name
+	repo_name=$github_repo_name
+	branch_name=$(echo $github_ref | cut -d'/' -f 3)
+}
+
+function bitbucket_pipeline () {
+    echo "Getting values from Bitbucket Pipelines"
+	
+	#variables needed to generate the YAML file
+	#asset_id=
+	scm_type=bitbucket
+	#repo_owner_name=
+	#repo_name=
+	#branch_name=
+}
+
+function generate_yaml () {
+    echo "Generating synopsys-io.yml"
+    wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.11/synopsys-io.yml
+	
+	for i in "$@"; do
         case "$i" in
         --IO.url=*) url="${i#*=}" ;;
         --IO.token=*) authtoken="${i#*=}" ;;
@@ -78,12 +102,12 @@ function github_pipeline () {
 	    s~<<BLACKDUCK_PROJECT_NAME>>~$blackduck_project_name~g; \
 	    s~<<BLACKDUCK_SERVER_URL>>~$blackduck_server_url~g; \
 	    s~<<BLACKDUCK_ACCESS_TOKEN>>~$blackduck_access_token~g; \
-	    s~<<APP_ID>>~$github_repo~g; \
-	    s~<<ASSET_ID>>~$github_repo~g; \
-	    s~<<SCM_TYPE>>~github~g; \
-	    s~<<REPO_OWNER_NAME>>~$github_owner_name~g; \
-	    s~<<REPO_NAME>>~$github_repo_name~g; \
-	    s~<<BRANCH_REF>>~$github_branch~g")
+	    s~<<APP_ID>>~$asset_id~g; \
+	    s~<<ASSET_ID>>~$asset_id~g; \
+	    s~<<SCM_TYPE>>~$scm_type~g; \
+	    s~<<REPO_OWNER_NAME>>~$repo_owner_name~g; \
+	    s~<<REPO_NAME>>~$repo_name~g; \
+	    s~<<BRANCH_REF>>~$branch_name~g")
     
     # apply the yml with the substituted value
     echo "$io_manifest" >synopsys-io.yml
@@ -91,12 +115,8 @@ function github_pipeline () {
     validate_values "IO_SERVER_URL" "$url"
     validate_values "IO_SERVER_TOKEN" "$authtoken"
 	
-    create_asset "$url" "$authtoken" "$github_repo"
+    create_asset "$url" "$authtoken" "$asset_id"
     echo "synopsys-io.yml generated"
-}
-
-function bitbucket_pipeline () {
-    echo "Setting up synopsys-io.yml for Bitbucket Pipelines"
 }
 
 function create_asset () {
