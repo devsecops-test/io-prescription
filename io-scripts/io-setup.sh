@@ -2,33 +2,33 @@
 
 run()
 {  
-	github_file=.github/workflows/
-	bitbucket_file=bitbucket-pipelines.yml
+    github_file=.github/workflows/
+    bitbucket_file=bitbucket-pipelines.yml
    
-	if [ -a "$github_file" ]; then
-		echo "$github_file exists."
-		github_pipeline
-	elif [ -f "$bitbucket_file" ]; then
-		echo "$bitbucket_file exists."
-		bitbucket_pipeline
-	fi
+    if [ -a "$github_file" ]; then
+        echo "$github_file exists."
+        github_pipeline
+    elif [ -f "$bitbucket_file" ]; then
+        echo "$bitbucket_file exists."
+        bitbucket_pipeline
+    fi
 }
 
 function github_pipeline () {
-	echo "Setting up synopsys-io.yml for Github Actions"
-	wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.11/synopsys-io.yml
+    echo "Setting up synopsys-io.yml for Github Actions"
+    wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.11/synopsys-io.yml
 	
-	github_owner_name=$(echo $GITHUB_ACTOR)
-	github_repo=$(echo $GITHUB_REPOSITORY)
-	github_repo_name=$(echo $git_repo | cut -d'/' -f 2)
-	github_ref=$(echo $GITHUB_REF)
-	github_branch=$(echo $git_ref | cut -d'/' -f 3)
+    github_owner_name=$(echo $GITHUB_ACTOR)
+    github_repo=$(echo $GITHUB_REPOSITORY)
+    github_repo_name=$(echo $git_repo | cut -d'/' -f 2)
+    github_ref=$(echo $GITHUB_REF)
+    github_branch=$(echo $git_ref | cut -d'/' -f 3)
 	
-	for i in "$@"; do
+    for i in "$@"; do
         case "$i" in
         --IO.url=*) url="${i#*=}" ;;
-		--IO.token=*) authtoken="${i#*=}" ;;
-		--slack.channel.id=*) slack_channel_id="${i#*=}" ;;    #slack
+        --IO.token=*) authtoken="${i#*=}" ;;
+        --slack.channel.id=*) slack_channel_id="${i#*=}" ;;    #slack
         --slack.token=*) slack_token="${i#*=}" ;;
         --jira.project.key=*) jira_project_key="${i#*=}" ;;    #jira
         --jira.assignee=*) jira_assignee="${i#*=}" ;;
@@ -53,8 +53,8 @@ function github_pipeline () {
         esac
     done
 	
-	io_manifest=$(cat synopsys-io.yml |
-		sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
+    io_manifest=$(cat synopsys-io.yml |
+        sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
 	    s~<<SLACK_TOKEN>>~$slack_token~g; \
 	    s~<<JIRA_PROJECT_KEY>>~$jira_project_key~g; \
 	    s~<<JIRA_ASSIGNEE>>~$jira_assignee~g; \
@@ -88,23 +88,23 @@ function github_pipeline () {
     # apply the yml with the substituted value
     echo "$io_manifest" >synopsys-io.yml
 	
-	validate_values "IO_SERVER_URL" "$url"
+    validate_values "IO_SERVER_URL" "$url"
     validate_values "IO_SERVER_TOKEN" "$authtoken"
 	
-	create_asset "$url" "$authtoken" "$github_repo"
-	echo "synopsys-io.yml generated"
+    create_asset "$url" "$authtoken" "$github_repo"
+    echo "synopsys-io.yml generated"
 }
 
 function bitbucket_pipeline () {
-	echo "Setting up synopsys-io.yml for Bitbucket Pipelines"
+    echo "Setting up synopsys-io.yml for Bitbucket Pipelines"
 }
 
 function create_asset () {
-	io_url=$1
-	userToken=$2
-	assetId=$3
+    io_url=$1
+    userToken=$2
+    assetId=$3
 	
-	onBoardingResponse=$(curl --location --request POST "$io_url/stargazer/api/applications/update" \
+    onBoardingResponse=$(curl --location --request POST "$io_url/stargazer/api/applications/update" \
     --header 'Content-Type: application/json' \
     --header "Authorization: Bearer $userToken" \
     --data-raw '{
