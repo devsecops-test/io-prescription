@@ -1,0 +1,120 @@
+application:
+  appId: <<REPOSITORY_NAME>>
+  assetId: <<UNIQUE_ASSET_NAME>>
+  appType: Webapp
+  microservice: false
+  projectLanguage: Java
+  platformVersion: Java 8
+  buildSystem: Maven
+  riskMatrixRevision: default
+  sourceFilePattern: .*\\+\\+\\+.*(\\.java|\\.jsp)+.*
+  sensitivePackagePattern: .*(\\+\\+\\+.*(com\\/synopsys\\/app)).*
+  fileChangeThreshold: 20
+environment:
+  scm: external
+  codePatch: ""
+  scmOwner: rahulguna10
+  scmRepositoryName: insecure-bank
+  scmBranchName: master --use this in place of release
+  jiraProjectName: ""
+  jiraIssuesQuery: ""
+  jiraApiUrl: ""
+  jiraUserName: ""
+  jiraAuthToken: ""
+security:	
+  pipeline:
+    type: "Inline"
+    toolchain: "Synopsys"
+    activities:
+      sast:
+        enabled: false
+        rescanThreshold: 0
+      sca:
+        enabled: false
+        rescanThreshold: 10
+      dast:
+        enabled: false
+        rescanThreshold: 10
+      sastplusm:
+        rescanThreshold: 30
+      dastplusm:
+        rescanThreshold: 30
+      imageScan:
+        rescanThreshold: 10
+connectors:
+  - connector_name: slack
+    fields:
+      channelidentifier: C015LGE7RRQ
+      bearertoken: <<SLACK_TOKEN>>
+  - connector_name: jira
+    fields:
+      issuetype: Bug
+      projectkey: STAR
+      assignee: test
+      url: <<JIRA_SERVER_URL>>
+      username: <<JIRA_USERNAME>>
+      authtoken: <<JIRA_AUTH_TOKEN>>
+  - connector_name: bitbucket
+    fields:
+      workspace_name: sig-devsecops
+      repository_name: insecure-bank
+      commit_id: <<BITBUCKET_COMMIT_ID>>
+      username: <<BITBUCKET_USERNAME>>
+      app_password: <<BITBUCKET_PASSWORD>>
+  - connector_name: github
+    fields:
+      file_path: workflowengine-results.sarif.json
+      owner_name: sig-devsecops
+      repository_name: insecure-bank
+      ref: refs/heads/master
+      commit_id: <<GITHUB_COMMIT_ID>>
+      username: <<GITHUB_USERNAME>>
+      accesstoken: <<GITHUB_ACCESS_TOKEN>>
+buildbreaker:
+  - activityname: sast
+    status:
+      - new
+      - open
+    overallseverity:
+      - high
+    categories:
+      - name: Cross-site scripting
+    severity: high
+      - name: SQL injection
+    severity: high
+      - activityname: dast
+    status:
+      - new
+      - triaged
+    overallseverity:
+      - high
+    categories:
+      - name: Sql-Injection
+    severity: medium
+  - activityname: sca
+    status:
+      - NEW
+    overallseverity:
+      - HIGH
+    categories:
+      - name: cve-2015-2119
+    severity: MEDIUM
+# for WF client
+tool_information:
+  - tool_name: coverity
+     enabled: false 
+     fields:
+       file_path: coverity-results.json
+  - tool_name: polaris
+     enabled: <<IS_SAST_ENABLED>>
+     fields:
+       project_name: sig-devsecops/insecure-bank
+       instance_url: <<POLARIS_SERVER_URL>>
+       auth_token: <<POLARIS_ACCESS_TOKEN>>
+  - tool_name: blackduck
+    enabled: <<IS_SCA_ENABLED>>
+    fields:
+      project_name: insecure-bank
+      project_version: 1.0.1
+      instance_url: <<BLACKDUCK_SERVER_URL>>
+      auth_token: <<BLACKDUCK_ACCESS_TOKEN>>
