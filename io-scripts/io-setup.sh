@@ -25,30 +25,30 @@ function github_pipeline () {
     github_repo_name=$(echo $github_repo | cut -d'/' -f 2)
     github_ref=$(echo $GITHUB_REF)
 	
-	#variables needed to generate the YAML file
-	asset_id=$github_repo
-	scm_type=github
-	repo_owner_name=$github_owner_name
-	repo_name=$github_repo_name
-	branch_name=$(echo $github_ref | cut -d'/' -f 3)
+    #variables needed to generate the YAML file
+    asset_id=$github_repo
+    scm_type=github
+    repo_owner_name=$github_owner_name
+    repo_name=$github_repo_name
+    branch_name=$(echo $github_ref | cut -d'/' -f 3)
 }
 
 function bitbucket_pipeline () {
     echo "Getting values from Bitbucket Pipelines"
 	
-	#variables needed to generate the YAML file
-	#asset_id=
-	scm_type=bitbucket
-	#repo_owner_name=
-	#repo_name=
-	#branch_name=
+    #variables needed to generate the YAML file
+    #asset_id=
+    scm_type=bitbucket
+    #repo_owner_name=
+    #repo_name=
+    #branch_name=
 }
 
 function generate_yaml () {
     echo "Generating synopsys-io.yml"
     wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2020.11/synopsys-io.yml
 	
-	for i in "$@"; do
+    for i in "$@"; do
         case "$i" in
         --IO.url=*) url="${i#*=}" ;;
         --IO.token=*) authtoken="${i#*=}" ;;
