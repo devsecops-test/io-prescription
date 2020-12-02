@@ -30,7 +30,12 @@ function github_pipeline () {
     scm_type=github
     repo_owner_name=$github_owner_name
     repo_name=$github_repo_name
-    branch_name=$(echo $github_ref | cut -d'/' -f 3)
+    
+    if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+        branch_name=$(echo $github_ref | cut -d'/' -f 3)
+    elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+        branch_name=$GITHUB_HEAD_REF
+    fi
 }
 
 function bitbucket_pipeline () {
