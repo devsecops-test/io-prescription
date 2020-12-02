@@ -14,7 +14,7 @@ run()
     fi
 	
     #method to generate YAML file
-    generate_yaml
+    generate_yaml "${ARGS[@]}"
 }
 
 function github_pipeline () {
