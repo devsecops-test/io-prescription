@@ -28,22 +28,22 @@ security:
   pipeline:
     type: "Inline"
     toolchain: "Synopsys"
-    activities:
-      sast:
-        enabled: false
-        rescanThreshold: 0
-      sca:
-        enabled: false
-        rescanThreshold: 10
-      dast:
-        enabled: false
-        rescanThreshold: 10
-      sastplusm:
-        rescanThreshold: 30
-      dastplusm:
-        rescanThreshold: 30
-      imageScan:
-        rescanThreshold: 10
+  activities:
+    sast:
+      enabled: false
+      rescanThreshold: 0
+    sca:
+      enabled: false
+      rescanThreshold: 10
+    dast:
+      enabled: false
+      rescanThreshold: 10
+    sastplusm:
+      rescanThreshold: 30
+    dastplusm:
+      rescanThreshold: 30
+    imageScan:
+      rescanThreshold: 10
 connectors:
 - connector_name: slack
   fields:
