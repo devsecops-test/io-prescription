@@ -75,12 +75,6 @@ function generateYML () {
         esac
     done
     
-    validate_values "IO_MANIFEST_URL" "$io_manifest_url"
-    validate_values "SCM_TYPE" "$scm_type"
-    validate_values "REPO_OWNER_NAME" "$repo_owner_name"
-    validate_values "REPO_NAME" "$repo_name"
-    validate_values "BRANCH_NAME" "$branch_name"
-    
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
 
@@ -170,6 +164,11 @@ function getIOPrescription() {
     validate_values "IO_SERVER_URL" "$io_url"
     validate_values "IO_SERVER_TOKEN" "$io_token"
     validate_values "Asset_Id" "$asset_id"
+    validate_values "IO_MANIFEST_URL" "$io_manifest_url"
+    validate_values "SCM_TYPE" "$scm_type"
+    validate_values "REPO_OWNER_NAME" "$repo_owner_name"
+    validate_values "REPO_NAME" "$repo_name"
+    validate_values "BRANCH_NAME" "$branch_name"
 	
     #chosing API - if persona is set to "developer" then "/api/manifest/update/persona/developer" will be called
     #chosing API - if persona is empty then "/api/manifest/update" will be called
