@@ -22,7 +22,7 @@
 # s~<<ASSET_ID>>~$asset_id~g; \ ===> Generate is dynamically ?? what will happen if client give custom name for assetId ??
 
 run() {
-    box_line "Synopsys Intelligent Security Scan" "Copyright Ã‚Â© 2016-2020 Synopsys, Inc. All rights reserved worldwide."
+    box_line "Synopsys Intelligent Security Scan" "Copyright © 2016-2020 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
 
     for i in "${ARGS[@]}"; do
@@ -59,6 +59,9 @@ function generateYML () {
         --workflow.url=*) workflow_url="${i#*=}" ;;
         --workflow.token=*) workflow_token="${i#*=}" ;;
         --workflow.template=*) config_file="${i#*=}" ;;
+	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
+	--buildbreaker.tag=*) buildbreaker_tag="${i#*=}" ;;
+	--sensitive.package=*) sensitive_package="${i#*=}" ;;
         --asset.id=*) asset_id="${i#*=}" ;;
         --slack.channel.id=*) slack_channel_id="${i#*=}" ;;    #slack
         --slack.token=*) slack_token="${i#*=}" ;;
@@ -94,6 +97,8 @@ function generateYML () {
         esac
     done
     
+    validate_values "IO_MANIFEST_URL" "$io_manifest_url"
+    
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
 
@@ -128,11 +133,12 @@ function generateYML () {
 	    s~<<BLACKDUCK_PROJECT_NAME>>~$blackduck_project_name~g; \
 	    s~<<BLACKDUCK_SERVER_URL>>~$blackduck_server_url~g; \
 	    s~<<BLACKDUCK_ACCESS_TOKEN>>~$blackduck_access_token~g; \
-        s~<<IS_SAST_ENABLED>>~$is_sast_enabled~g; \
-        s~<<IS_SCA_ENABLED>>~$is_sca_enabled~g; \
+            s~<<IS_SAST_ENABLED>>~$is_sast_enabled~g; \
+            s~<<IS_SCA_ENABLED>>~$is_sca_enabled~g; \
 	    s~<<APP_ID>>~$asset_id~g; \
 	    s~<<ASSET_ID>>~$asset_id~g; \
-        s~<<RELEASE_TYPE>>~$release_type~g; \
+            s~<<RELEASE_TYPE>>~$release_type~g; \
+	    s~<<SENSITIVE_PACKAGE_PATTERN>>~$sensitive_package~g; \
 	    s~<<SCM_TYPE>>~$scm_type~g; \
 	    s~<<SCM_OWNER>>~$scm_owner~g; \
 	    s~<<SCM_REPO_NAME>>~$scm_repo_name~g; \
@@ -220,8 +226,7 @@ function is_synopsys_config_present () {
     if [ ! -f "$config_file" ]; then
         printf "synopsys-io.yml file does not exist\n"
         printf "Downloading default synopsys-io.yml\n"
-        # wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/synopsys-io.yml
-        wget https://akshayme.blob.core.windows.net/int-io/synopsys-io.yml
+	wget "$io_manifest_url"
     fi
 }
 
