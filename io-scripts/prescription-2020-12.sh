@@ -1,26 +1,5 @@
 #!/bin/bash
 
-# todo - alm ===> pass these argumentments from action or pipe script
-# --scm.type
-# --scm.owner
-# --scm.repo.name
-# --scm.branch.name
-
-# s~<<SCM_TYPE>>~$scm_type~g; \ ===> Accept `--scm.type` from actions and bb pipe ??
-# s~<<REPO_OWNER_NAME>>~$repo_owner_name~g; \
-# s~<<REPO_NAME>>~$repo_name~g; \
-# s~<<BRANCH_REF>>~$branch_name~g")
-
-# environment:
-#   scm: <<SCM_TYPE>>
-#   scmOwner: <<REPO_OWNER_NAME>>
-#   scmRepositoryName: <<REPO_NAME>>
-#   scmBranchName: <<BRANCH_REF>>
-
-# todo - alm
-# s~<<APP_ID>>~$asset_id~g; \
-# s~<<ASSET_ID>>~$asset_id~g; \ ===> Generate is dynamically ?? what will happen if client give custom name for assetId ??
-
 run() {
     box_line "Synopsys Intelligent Security Scan" "Copyright © 2016-2020 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
@@ -60,8 +39,7 @@ function generateYML () {
         --workflow.token=*) workflow_token="${i#*=}" ;;
         --workflow.template=*) config_file="${i#*=}" ;;
 	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
-	--buildbreaker.tag=*) buildbreaker_tag="${i#*=}" ;;
-	--sensitive.package=*) sensitive_package="${i#*=}" ;;
+	--sensitive.package.pattern=*) sensitive_package="${i#*=}" ;;
         --asset.id=*) asset_id="${i#*=}" ;;
         --slack.channel.id=*) slack_channel_id="${i#*=}" ;;    #slack
         --slack.token=*) slack_token="${i#*=}" ;;
@@ -98,6 +76,10 @@ function generateYML () {
     done
     
     validate_values "IO_MANIFEST_URL" "$io_manifest_url"
+    validate_values "SCM_TYPE" "$scm_type"
+    validate_values "REPO_OWNER_NAME" "$repo_owner_name"
+    validate_values "REPO_NAME" "$repo_name"
+    validate_values "BRANCH_NAME" "$branch_name"
     
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
