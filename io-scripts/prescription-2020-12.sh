@@ -75,6 +75,10 @@ function generateYML () {
         esac
     done
     
+    validate_values "IO_SERVER_URL" "$io_url"
+    validate_values "IO_SERVER_TOKEN" "$io_token"
+    validate_values "IO_MANIFEST_URL" "$io_manifest_url"
+    
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
 
@@ -128,8 +132,6 @@ function generateYML () {
 
 function loadWorkflow() {
     #validates mandatory arguments for IO
-    validate_values "IO_SERVER_URL" "$io_url"
-    validate_values "IO_SERVER_TOKEN" "$io_token"
     validate_values "WORKFLOW_SERVER_URL" "$workflow_url"
     validate_values "WORKFLOW_SERVER_TOKEN" "$workflow_token"
 	
@@ -161,10 +163,7 @@ function getIOPrescription() {
     echo "Inside Prescription"
 	
     #validates mandatory arguments for IO
-    validate_values "IO_SERVER_URL" "$io_url"
-    validate_values "IO_SERVER_TOKEN" "$io_token"
     validate_values "Asset_Id" "$asset_id"
-    validate_values "IO_MANIFEST_URL" "$io_manifest_url"
     validate_values "SCM_TYPE" "$scm_type"
     validate_values "REPO_OWNER_NAME" "$repo_owner_name"
     validate_values "REPO_NAME" "$repo_name"
