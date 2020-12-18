@@ -187,11 +187,6 @@ function getIOPrescription() {
     prescrip=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @data.json ${io_url}/stargazer/api/manifest/${API})
     echo $prescrip
     echo $prescrip >result.json
-
-    # todo: remove ::set-output and put in github actions
-    # echo "::set-output name=sastScan::$(ruby -rjson -e 'j = JSON.parse(File.read("result.json")); puts j["security"]["activities"]["sast"]["enabled"]')"
-    # echo "::set-output name=scaScan::$(ruby -rjson -e 'j = JSON.parse(File.read("result.json")); puts j["security"]["activities"]["sca"]["enabled"]')"
-    # echo "::set-output name=dastScan::$(ruby -rjson -e 'j = JSON.parse(File.read("result.json")); puts j["security"]["activities"]["dast"]["enabled"]')"
 }
 
 function validate_values () {
