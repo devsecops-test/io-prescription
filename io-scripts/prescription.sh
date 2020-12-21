@@ -50,6 +50,7 @@ function generateYML () {
         --jira.project.name=*) jira_project_name="${i#*=}" ;;    #jira
         --jira.assignee=*) jira_assignee="${i#*=}" ;;
         --jira.api.url=*) jira_api_url="${i#*=}" ;;
+	--jira.issues.query=*) jira_issues_query="${i#*=}" ;;
         --jira.username=*) jira_username="${i#*=}" ;;
         --jira.auth.token=*) jira_auth_token="${i#*=}" ;;
         --scm.type=*) scm_type="${i#*=}" ;;    #scm
@@ -111,6 +112,7 @@ function generateYML () {
 	    s~<<JIRA_PROJECT_NAME>>~$jira_project_name~g; \
 	    s~<<JIRA_ASSIGNEE>>~$jira_assignee~g; \
 	    s~<<JIRA_API_URL>>~$jira_api_url~g; \
+	    s~<<JIRA_ISSUES_QUERY>>~$jira_issues_query~g; \
 	    s~<<JIRA_USERNAME>>~$jira_username~g; \
 	    s~<<JIRA_AUTH_TOKEN>>~$jira_auth_token~g; \
 	    s~<<BITBUCKET_COMMIT_ID>>~$bitbucket_commit_id~g; \
