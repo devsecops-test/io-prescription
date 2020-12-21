@@ -164,7 +164,7 @@ function getIOPrescription() {
     echo "Inside Prescription"
 	
     #validates mandatory arguments for IO
-    validate_values "Asset_Id" "$asset_id"
+    validate_values "IO_ASSET_ID" "$asset_id"
     validate_values "SCM_TYPE" "$scm_type"
     validate_values "SCM_OWNER" "$scm_owner"
     validate_values "REPOSITORY_NAME" "$scm_repo_name"
