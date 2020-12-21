@@ -9,8 +9,8 @@ application:
   buildSystem: Maven
   riskMatrixRevision: default
   sourceFilePattern: .*\\+\\+\\+.*(\\.java|\\.jsp)+.*
-  sensitivePackagePattern: .*(\\+\\+\\+.*(com\\/synopsys\\/app)).*
-  fileChangeThreshold: 20
+  sensitivePackagePattern: <<SENSITIVE_PACKAGE_PATTERN>>
+  fileChangeThreshold: <<FILE_CHANGE_THRESHOLD>>
 environment:
   scm: <<SCM_TYPE>>
   scmOwner: <<SCM_OWNER>>
@@ -28,9 +28,9 @@ environment:
 security:
   activities:
     sast:
-      rescanThreshold: 0
+      rescanThreshold: <<SAST_RESCAN_THRESHOLD>>
     sca:
-      rescanThreshold: 10
+      rescanThreshold: <<SCA_RESCAN_THRESHOLD>>
 connectors:
 - connector_name: slack
   fields:
