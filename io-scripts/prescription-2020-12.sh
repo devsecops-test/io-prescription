@@ -135,7 +135,10 @@ function loadWorkflow() {
     #validates mandatory arguments for IO
     validate_values "WORKFLOW_SERVER_URL" "$workflow_url"
     validate_values "WORKFLOW_SERVER_TOKEN" "$workflow_token"
-	
+    
+    #checks if WorkflowClient.jar is present
+    is_workflow_client_jar_present
+    
     asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
     curr_date=$(date +'%Y-%m-%d')
    
