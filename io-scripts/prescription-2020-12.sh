@@ -38,6 +38,9 @@ function generateYML () {
         --io.token=*) io_token="${i#*=}" ;;
 	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
         --release.type=*) release_type="${i#*=}" ;;
+	--file.change.threshold=*) file_change_threshold="${i#*=}" ;;
+	--sast.rescan.threshold=*) sast_rescan_threshold="${i#*=}" ;;
+	--sca.rescan.threshold=*) sca_rescan_threshold="${i#*=}" ;;
         --workflow.url=*) workflow_url="${i#*=}" ;;
         --workflow.token=*) workflow_token="${i#*=}" ;;
 	--sensitive.package.pattern=*) sensitive_package="${i#*=}" ;;
@@ -89,6 +92,18 @@ function generateYML () {
     else
         asset_id=${asset_id_from_yml}
     fi
+    
+    if [ -z "$file_change_threshold" ]; then
+        file_change_threshold=20
+    fi
+    
+    if [ -z "$sast_rescan_threshold" ]; then
+        sast_rescan_threshold=10
+    fi
+    
+    if [ -z "$sca_rescan_threshold" ]; then
+        sca_rescan_threshold=10
+    fi
 
     synopsys_io_manifest=$(cat io-manifest.yml |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
@@ -119,6 +134,9 @@ function generateYML () {
 	    s~<<ASSET_ID>>~$asset_id~g; \
             s~<<RELEASE_TYPE>>~$release_type~g; \
 	    s~<<SENSITIVE_PACKAGE_PATTERN>>~$sensitive_package~g; \
+	    s~<<FILE_CHANGE_THRESHOLD>>~$file_change_threshold~g; \
+	    s~<<SAST_RESCAN_THRESHOLD>>~$sast_rescan_threshold~g; \
+	    s~<<SCA_RESCAN_THRESHOLD>>~$sca_rescan_threshold~g; \
 	    s~<<SCM_TYPE>>~$scm_type~g; \
 	    s~<<SCM_OWNER>>~$scm_owner~g; \
 	    s~<<SCM_REPO_NAME>>~$scm_repo_name~g; \
