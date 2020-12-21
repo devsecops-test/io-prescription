@@ -90,7 +90,7 @@ function generateYML () {
         asset_id=${asset_id_from_yml}
     fi
 
-    synopsys_io_manifest=$(cat synopsys-io.yml |
+    synopsys_io_manifest=$(cat io-manifest.yml |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
 	    s~<<SLACK_TOKEN>>~$slack_token~g; \
 	    s~<<JIRA_PROJECT_NAME>>~$jira_project_name~g; \
