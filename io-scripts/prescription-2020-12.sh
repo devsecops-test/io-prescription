@@ -78,7 +78,6 @@ function generateYML () {
     
     validate_values "IO_SERVER_URL" "$io_url"
     validate_values "IO_SERVER_TOKEN" "$io_token"
-    validate_values "IO_MANIFEST_URL" "$io_manifest_url"
     
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
