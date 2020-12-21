@@ -32,13 +32,13 @@ run() {
 function generateYML () {
     for i in "$@"; do
         case "$i" in
-        --IO.url=*) io_url="${i#*=}" ;;
-        --IO.token=*) io_token="${i#*=}" ;;
+        --io.url=*) io_url="${i#*=}" ;;
+        --io.token=*) io_token="${i#*=}" ;;
+	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
         --release.type=*) release_type="${i#*=}" ;;
         --workflow.url=*) workflow_url="${i#*=}" ;;
         --workflow.token=*) workflow_token="${i#*=}" ;;
         --workflow.template=*) config_file="${i#*=}" ;;
-	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
 	--sensitive.package.pattern=*) sensitive_package="${i#*=}" ;;
         --asset.id=*) asset_id="${i#*=}" ;;
         --slack.channel.id=*) slack_channel_id="${i#*=}" ;;    #slack
@@ -168,6 +168,10 @@ function getIOPrescription() {
     validate_values "REPO_OWNER_NAME" "$repo_owner_name"
     validate_values "REPO_NAME" "$repo_name"
     validate_values "BRANCH_NAME" "$branch_name"
+    
+    printf "IO Asset ID: ${asset_id}"
+    printf "SCM TYPE: ${scm_type}"
+    printf "Using the repository ${repo_name} and branch ${branch_name}. Action triggered by ${repo_owner_name}"
 	
     #chosing API - if persona is set to "developer" then "/api/manifest/update/persona/developer" will be called
     #chosing API - if persona is empty then "/api/manifest/update" will be called
@@ -216,7 +220,7 @@ function is_workflow_client_jar_present () {
 function create_io_asset () {	
     validate_values "IO_SERVER_URL" "$io_url"
     validate_values "IO_SERVER_TOKEN" "$io_token"
-    validate_values "Asset_Id" "$asset_id"
+    validate_values "IO_ASSET_ID" "$asset_id"
 
     onBoardingResponse=$(curl --location --request POST "$io_url/stargazer/api/applications/update" \
     --header 'Content-Type: application/json' \
