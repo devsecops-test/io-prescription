@@ -37,6 +37,7 @@ function generateYML () {
         --io.url=*) io_url="${i#*=}" ;;
         --io.token=*) io_token="${i#*=}" ;;
 	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
+	--io.config.file=*) config_file="${i#*=}" ;;
         --release.type=*) release_type="${i#*=}" ;;
         --workflow.url=*) workflow_url="${i#*=}" ;;
         --workflow.token=*) workflow_token="${i#*=}" ;;
