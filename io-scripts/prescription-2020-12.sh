@@ -165,13 +165,13 @@ function getIOPrescription() {
     #validates mandatory arguments for IO
     validate_values "Asset_Id" "$asset_id"
     validate_values "SCM_TYPE" "$scm_type"
-    validate_values "REPO_OWNER_NAME" "$repo_owner_name"
-    validate_values "REPO_NAME" "$repo_name"
-    validate_values "BRANCH_NAME" "$branch_name"
+    validate_values "SCM_OWNER" "$scm_owner"
+    validate_values "REPOSITORY_NAME" "$scm_repo_name"
+    validate_values "BRANCH_NAME" "$scm_branch_name"
     
     printf "IO Asset ID: ${asset_id}"
     printf "SCM TYPE: ${scm_type}"
-    printf "Using the repository ${repo_name} and branch ${branch_name}. Action triggered by ${repo_owner_name}"
+    printf "Using the repository ${scm_repo_name} and branch ${scm_branch_name}. Action triggered by ${scm_owner}"
 	
     #chosing API - if persona is set to "developer" then "/api/manifest/update/persona/developer" will be called
     #chosing API - if persona is empty then "/api/manifest/update" will be called
