@@ -4,7 +4,7 @@ run() {
     box_line "Synopsys Intelligent Security Scan" "Copyright © 2016-2020 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
     
-    config_file="synopsys-io.yml"
+    config_file="io-manifest.yml"
     
     for i in "${ARGS[@]}"; do
         case "$i" in
@@ -37,7 +37,6 @@ function generateYML () {
         --io.url=*) io_url="${i#*=}" ;;
         --io.token=*) io_token="${i#*=}" ;;
 	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
-	--io.config.file=*) config_file="${i#*=}" ;;
         --release.type=*) release_type="${i#*=}" ;;
         --workflow.url=*) workflow_url="${i#*=}" ;;
         --workflow.token=*) workflow_token="${i#*=}" ;;
@@ -205,9 +204,13 @@ function validate_values () {
 
 function is_synopsys_config_present () {
     if [ ! -f "$config_file" ]; then
-        printf "synopsys-io.yml file does not exist\n"
-        printf "Downloading default synopsys-io.yml\n"
-	wget "$io_manifest_url"
+        printf "${config_file} file does not exist\n"
+        printf "Downloading default ${config_file}\n"
+        if [ -z "$io_manifest_url" ]; then
+            wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/io-manifest.yml
+        else
+            wget "$io_manifest_url"
+	fi
     fi
 }
 
