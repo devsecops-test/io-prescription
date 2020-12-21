@@ -1,7 +1,7 @@
 #!/bin/bash
 
 run() {
-    box_line "Synopsys Intelligent Security Scan" "Copyright © 2016-2020 Synopsys, Inc. All rights reserved worldwide."
+    box_line "Synopsys Intelligent Security Scan" "Copyright 2016-2020 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
     
     config_file="io-manifest.yml"
@@ -257,7 +257,7 @@ function box_line () {
     len=$((${#arg2}+5))
     box_str="\n+"
     for i in $(seq $len); do box_str="$box_str-"; done;
-    box_str="$box_str+\n| "$arg1" "$(printf '%*s' 35)" |\n"
+    box_str="$box_str+\n| "$arg1" "$(printf '%*s' 33)" |\n"
     box_str="$box_str| "$arg2" "$(printf '%*s' 2)" |\n+"
     for i in $(seq $len); do box_str="$box_str-"; done;
     box_str="$box_str+\n\n"
