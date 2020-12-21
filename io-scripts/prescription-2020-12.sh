@@ -3,7 +3,9 @@
 run() {
     box_line "Synopsys Intelligent Security Scan" "Copyright © 2016-2020 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
-
+    
+    config_file="synopsys-io.yml"
+    
     for i in "${ARGS[@]}"; do
         case "$i" in
         --stage=*) stage="${i#*=}" ;;
@@ -38,7 +40,6 @@ function generateYML () {
         --release.type=*) release_type="${i#*=}" ;;
         --workflow.url=*) workflow_url="${i#*=}" ;;
         --workflow.token=*) workflow_token="${i#*=}" ;;
-        --workflow.template=*) config_file="${i#*=}" ;;
 	--sensitive.package.pattern=*) sensitive_package="${i#*=}" ;;
         --asset.id=*) asset_id="${i#*=}" ;;
         --slack.channel.id=*) slack_channel_id="${i#*=}" ;;    #slack
@@ -87,7 +88,7 @@ function generateYML () {
     if [[ "${asset_id_from_yml}" == "<<ASSET_ID>>" ]]; then
         create_io_asset
     else
-        asset_id=asset_id_from_yml
+        asset_id=${asset_id_from_yml}
     fi
 
     synopsys_io_manifest=$(cat synopsys-io.yml |
@@ -169,9 +170,9 @@ function getIOPrescription() {
     validate_values "REPOSITORY_NAME" "$scm_repo_name"
     validate_values "BRANCH_NAME" "$scm_branch_name"
     
-    printf "IO Asset ID: ${asset_id}"
-    printf "SCM TYPE: ${scm_type}"
-    printf "Using the repository ${scm_repo_name} and branch ${scm_branch_name}. Action triggered by ${scm_owner}"
+    printf "IO Asset ID: ${asset_id}\n"
+    printf "SCM TYPE: ${scm_type}\n"
+    printf "Using the repository ${scm_repo_name} and branch ${scm_branch_name}. Action triggered by ${scm_owner}\n\n"
 	
     #chosing API - if persona is set to "developer" then "/api/manifest/update/persona/developer" will be called
     #chosing API - if persona is empty then "/api/manifest/update" will be called
