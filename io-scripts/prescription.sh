@@ -158,7 +158,7 @@ function loadWorkflow() {
     #checks if WorkflowClient.jar is present
     is_workflow_client_jar_present
     
-    asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
+    asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
     curr_date=$(date +'%Y-%m-%d')
    
     scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
