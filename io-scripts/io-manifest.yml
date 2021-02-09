@@ -22,6 +22,8 @@ environment:
   githubApiUrl: https://api.github.com/repos/
   githubUsername: <<GITHUB_USERNAME>>
   githubToken: <<GITHUB_ACCESS_TOKEN>>
+  gitlabHostUrl: <<GITLAB_HOST_URL>>
+  gitlabToken: <<GITLAB_TOKEN>>
   jiraProjectName: <<JIRA_PROJECT_NAME>>
   jiraIssuesQuery: <<JIRA_ISSUES_QUERY>>
   jiraApiUrl: <<JIRA_API_URL>>
