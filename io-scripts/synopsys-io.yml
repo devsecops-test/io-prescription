@@ -2,48 +2,37 @@ application:
   appId: <<APP_ID>>
   assetId: <<ASSET_ID>>
   appType: Webapp
+  release: <<RELEASE_TYPE>>
   microservice: false
   projectLanguage: Java
   platformVersion: Java 8
   buildSystem: Maven
   riskMatrixRevision: default
-  sourceFilePattern: .*\\+\\+\\+.*(\\.java|\\.jsp)+.*
-  sensitivePackagePattern: .*(\\+\\+\\+.*(com\\/synopsys\\/app)).*
-  fileChangeThreshold: 20
+  sourceFilePattern: .*\+\+\+.*(\.java|\.jsp)+.*
+  sensitivePackagePattern: <<SENSITIVE_PACKAGE_PATTERN>>
+  fileChangeThreshold: <<FILE_CHANGE_THRESHOLD>>
 environment:
   scm: <<SCM_TYPE>>
-  scmOwner: <<REPO_OWNER_NAME>>
-  scmRepositoryName: <<REPO_NAME>>
-  scmBranchName: <<BRANCH_REF>>
+  scmOwner: <<SCM_OWNER>>
+  scmRepositoryName: <<SCM_REPO_NAME>>
+  scmBranchName: <<SCM_BRANCH_NAME>>
   bitbucketUserName: <<BITBUCKET_USERNAME>>
   bitbucketPassword: <<BITBUCKET_PASSWORD>>
   bitbucketApiUrl: https://api.bitbucket.org/2.0/repositories/
   githubApiUrl: https://api.github.com/repos/
-  jiraProjectName: <<JIRA_PROJECT_KEY>>
+  githubUsername: <<GITHUB_USERNAME>>
+  githubToken: <<GITHUB_ACCESS_TOKEN>>
+  jiraProjectName: <<JIRA_PROJECT_NAME>>
   jiraIssuesQuery: <<JIRA_ISSUES_QUERY>>
   jiraApiUrl: <<JIRA_API_URL>>
   jiraUserName: <<JIRA_USERNAME>>
   jiraAuthToken: <<JIRA_AUTH_TOKEN>>
-security:	
-  pipeline:
-    type: "Inline"
-    toolchain: "Synopsys"
+security:
   activities:
     sast:
-      enabled: false
-      rescanThreshold: 0
+      rescanThreshold: <<SAST_RESCAN_THRESHOLD>>
     sca:
-      enabled: false
-      rescanThreshold: 10
-    dast:
-      enabled: false
-      rescanThreshold: 10
-    sastplusm:
-      rescanThreshold: 30
-    dastplusm:
-      rescanThreshold: 30
-    imageScan:
-      rescanThreshold: 10
+      rescanThreshold: <<SCA_RESCAN_THRESHOLD>>
 connectors:
 - connector_name: slack
   fields:
@@ -52,15 +41,15 @@ connectors:
 - connector_name: jira
   fields:
     issuetype: Bug
-    projectkey: <<JIRA_PROJECT_KEY>>
+    projectkey: <<JIRA_PROJECT_NAME>>
     assignee: <<JIRA_ASSIGNEE>>
-    url: <<JIRA_SERVER_URL>>
+    url: <<JIRA_API_URL>>
     username: <<JIRA_USERNAME>>
     authtoken: <<JIRA_AUTH_TOKEN>>
 - connector_name: bitbucket
   fields:
-    workspace_name: <<BITBUCKET_WORKSPACE_NAME>>
-    repository_name: <<BITBUCKET_REPO_NAME>>
+    workspace_name: <<SCM_OWNER>>
+    repository_name: <<SCM_REPO_NAME>>
     commit_id: <<BITBUCKET_COMMIT_ID>>
     username: <<BITBUCKET_USERNAME>>
     app_password: <<BITBUCKET_PASSWORD>>
