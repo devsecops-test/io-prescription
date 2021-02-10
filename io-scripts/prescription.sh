@@ -36,21 +36,20 @@ function generateYML () {
         case "$i" in
         --io.url=*) io_url="${i#*=}" ;;
         --io.token=*) io_token="${i#*=}" ;;
-	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
+	    --io.manifest.url=*) io_manifest_url="${i#*=}" ;;
         --release.type=*) release_type="${i#*=}" ;;
-	--file.change.threshold=*) file_change_threshold="${i#*=}" ;;
-	--sast.rescan.threshold=*) sast_rescan_threshold="${i#*=}" ;;
-	--sca.rescan.threshold=*) sca_rescan_threshold="${i#*=}" ;;
+	    --file.change.threshold=*) file_change_threshold="${i#*=}" ;;
+	    --sast.rescan.threshold=*) sast_rescan_threshold="${i#*=}" ;;
+	    --sca.rescan.threshold=*) sca_rescan_threshold="${i#*=}" ;;
         --workflow.url=*) workflow_url="${i#*=}" ;;
-        --workflow.token=*) workflow_token="${i#*=}" ;;
-	--sensitive.package.pattern=*) sensitive_package="${i#*=}" ;;
+	    --sensitive.package.pattern=*) sensitive_package="${i#*=}" ;;
         --asset.id=*) asset_id="${i#*=}" ;;
         --slack.channel.id=*) slack_channel_id="${i#*=}" ;;    #slack
         --slack.token=*) slack_token="${i#*=}" ;;
         --jira.project.name=*) jira_project_name="${i#*=}" ;;    #jira
         --jira.assignee=*) jira_assignee="${i#*=}" ;;
         --jira.api.url=*) jira_api_url="${i#*=}" ;;
-	--jira.issues.query=*) jira_issues_query="${i#*=}" ;;
+	    --jira.issues.query=*) jira_issues_query="${i#*=}" ;;
         --jira.username=*) jira_username="${i#*=}" ;;
         --jira.auth.token=*) jira_auth_token="${i#*=}" ;;
         --scm.type=*) scm_type="${i#*=}" ;;    #scm
@@ -130,11 +129,11 @@ function generateYML () {
 	    s~<<BLACKDUCK_PROJECT_NAME>>~$blackduck_project_name~g; \
 	    s~<<BLACKDUCK_SERVER_URL>>~$blackduck_server_url~g; \
 	    s~<<BLACKDUCK_ACCESS_TOKEN>>~$blackduck_access_token~g; \
-            s~<<IS_SAST_ENABLED>>~$is_sast_enabled~g; \
-            s~<<IS_SCA_ENABLED>>~$is_sca_enabled~g; \
+        s~<<IS_SAST_ENABLED>>~$is_sast_enabled~g; \
+        s~<<IS_SCA_ENABLED>>~$is_sca_enabled~g; \
 	    s~<<APP_ID>>~$asset_id~g; \
 	    s~<<ASSET_ID>>~$asset_id~g; \
-            s~<<RELEASE_TYPE>>~$release_type~g; \
+        s~<<RELEASE_TYPE>>~$release_type~g; \
 	    s~<<SENSITIVE_PACKAGE_PATTERN>>~$sensitive_package~g; \
 	    s~<<FILE_CHANGE_THRESHOLD>>~$file_change_threshold~g; \
 	    s~<<SAST_RESCAN_THRESHOLD>>~$sast_rescan_threshold~g; \
@@ -153,7 +152,6 @@ function generateYML () {
 function loadWorkflow() {
     #validates mandatory arguments for IO
     validate_values "WORKFLOW_SERVER_URL" "$workflow_url"
-    validate_values "WORKFLOW_SERVER_TOKEN" "$workflow_token"
     
     #checks if WorkflowClient.jar is present
     is_workflow_client_jar_present
@@ -177,7 +175,7 @@ function loadWorkflow() {
 	
     echo "updating last scan date for perfomed security activities"
     header='Authorization: Bearer '$io_token''
-    scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json ${io_url}/stargazer/api/manifest/update/scandate)
+    scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json ${io_url}/io/api/manifest/update/scandate)
     echo $scandateresponse
 }
 
@@ -211,7 +209,7 @@ function getIOPrescription() {
     echo $(ruby -ryaml -rjson -e "puts JSON.pretty_generate(YAML.safe_load(File.read('synopsys-io.yml')))") >data.json
     cat data.json
     echo "Getting Prescription"
-    prescrip=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @data.json ${io_url}/stargazer/api/manifest/${API})
+    prescrip=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @data.json ${io_url}/io/api/manifest/${API})
     echo $prescrip
     echo $prescrip >result.json
 }
@@ -249,7 +247,7 @@ function create_io_asset () {
     validate_values "IO_SERVER_TOKEN" "$io_token"
     validate_values "IO_ASSET_ID" "$asset_id"
 
-    onBoardingResponse=$(curl --location --request POST "$io_url/stargazer/api/applications/update" \
+    onBoardingResponse=$(curl --location --request POST "$io_url/io/api/applications/update" \
     --header 'Content-Type: application/json' \
     --header "Authorization: Bearer $io_token" \
     --data-raw '{
