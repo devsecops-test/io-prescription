@@ -66,9 +66,9 @@ function generateYML () {
         --github.commit.id=*) github_commit_id="${i#*=}" ;;
         --github.username=*) github_username="${i#*=}" ;;
         --github.token=*) github_access_token="${i#*=}" ;;
-		--gitlab.url=*) gitlab_url="${i#*=}" ;;					#gitlab
-		--gitlab.token=*) gitlab_token="${i#*=}" ;;
-		--IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
+	--gitlab.url=*) gitlab_url="${i#*=}" ;;					#gitlab
+	--gitlab.token=*) gitlab_token="${i#*=}" ;;
+	--IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
         --polaris.project.name=*) polaris_project_name="${i#*=}" ;;
         --polaris.url=*) polaris_server_url="${i#*=}" ;;
         --polaris.token=*) polaris_access_token="${i#*=}" ;;
@@ -130,19 +130,19 @@ function generateYML () {
 	    s~<<GITHUB_COMMIT_ID>>~$github_commit_id~g; \
 	    s~<<GITHUB_USERNAME>>~$github_username~g; \
 	    s~<<GITHUB_ACCESS_TOKEN>>~$github_access_token~g; \
-		s~<<GITLAB_HOST_URL>>~$gitlab_url~g;\
-		s~<<GITLAB_TOKEN>>~$gitlab_token~g;\
+	    s~<<GITLAB_HOST_URL>>~$gitlab_url~g;\
+	    s~<<GITLAB_TOKEN>>~$gitlab_token~g;\
 	    s~<<POLARIS_PROJECT_NAME>>~$polaris_project_name~g; \
 	    s~<<POLARIS_SERVER_URL>>~$polaris_server_url~g; \
 	    s~<<POLARIS_ACCESS_TOKEN>>~$polaris_access_token~g; \
 	    s~<<BLACKDUCK_PROJECT_NAME>>~$blackduck_project_name~g; \
 	    s~<<BLACKDUCK_SERVER_URL>>~$blackduck_server_url~g; \
 	    s~<<BLACKDUCK_ACCESS_TOKEN>>~$blackduck_access_token~g; \
-		s~<<IS_SAST_ENABLED>>~$is_sast_enabled~g; \
-		s~<<IS_SCA_ENABLED>>~$is_sca_enabled~g; \
+	    s~<<IS_SAST_ENABLED>>~$is_sast_enabled~g; \
+	    s~<<IS_SCA_ENABLED>>~$is_sca_enabled~g; \
 	    s~<<APP_ID>>~$asset_id~g; \
 	    s~<<ASSET_ID>>~$asset_id~g; \
-		s~<<RELEASE_TYPE>>~$release_type~g; \
+	    s~<<RELEASE_TYPE>>~$release_type~g; \
 	    s~<<SENSITIVE_PACKAGE_PATTERN>>~$sensitive_package~g; \
 	    s~<<FILE_CHANGE_THRESHOLD>>~$file_change_threshold~g; \
 	    s~<<SAST_RESCAN_THRESHOLD>>~$sast_rescan_threshold~g; \
