@@ -66,7 +66,7 @@ function generateYML () {
         --github.commit.id=*) github_commit_id="${i#*=}" ;;
         --github.username=*) github_username="${i#*=}" ;;
         --github.token=*) github_access_token="${i#*=}" ;;
-	--gitlab.url=*) gitlab_url="${i#*=}" ;;					#gitlab
+	--gitlab.url=*) gitlab_url="${i#*=}" ;;			      #gitlab
 	--gitlab.token=*) gitlab_token="${i#*=}" ;;
 	--IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
         --polaris.project.name=*) polaris_project_name="${i#*=}" ;;
@@ -107,10 +107,13 @@ function generateYML () {
         sca_rescan_threshold=10
     fi
 	
-	if [ -z "$release_type" ]; then
+    if [ -z "$release_type" ]; then
         release_type="major"
     fi
-	
+    
+    if [ -z "$sensitive_package" ]; then
+        sensitive_package= ".*(\\+\\+\\+.*(\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*"
+    fi
 
     synopsys_io_manifest=$(cat io-manifest.yml |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
