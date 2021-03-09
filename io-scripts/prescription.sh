@@ -94,7 +94,7 @@ function generateYML () {
     else
         asset_id=${asset_id_from_yml}
     fi
-    
+    #default values
     if [ -z "$file_change_threshold" ]; then
         file_change_threshold=20
     fi
@@ -107,6 +107,10 @@ function generateYML () {
         sca_rescan_threshold=10
     fi
 	
+    if [ -z "$persona" ]; then
+        persona="developer"
+    fi
+    
     if [ -z "$release_type" ]; then
         release_type="major"
     fi
