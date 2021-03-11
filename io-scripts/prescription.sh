@@ -116,7 +116,7 @@ function generateYML () {
     fi
     
     if [ -z "$sensitive_package" ]; then
-        sensitive_package= ".*(\\+\\+\\+.*(\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*"
+        sensitive_package=".*(\\+\\+\\+.*(\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*"
     fi
 
     synopsys_io_manifest=$(cat io-manifest.yml |
@@ -191,7 +191,7 @@ function loadWorkflow() {
 	
     echo "updating last scan date for perfomed security activities"
     header='Authorization: Bearer '$io_token''
-    scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json ${io_url}/io/api/manifest/update/scandate)
+    scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json "${io_url}/io/api/manifest/update/scandate)
     echo $scandateresponse
 }
 
@@ -206,9 +206,9 @@ function getIOPrescription() {
     validate_values "REPOSITORY_NAME" "$scm_repo_name"
     validate_values "BRANCH_NAME" "$scm_branch_name"
     
-    printf "IO Asset ID: ${asset_id}\n"
-    printf "SCM TYPE: ${scm_type}\n"
-    printf "Using the repository ${scm_repo_name} and branch ${scm_branch_name}. Action triggered by ${scm_owner}\n\n"
+    printf "IO Asset ID: %s\n", "${asset_id}"
+    printf "SCM TYPE: %s \n", "${scm_type}"
+    printf "Using the repository %s and branch %s. Action triggered by %s \n\n", "${scm_repo_name}", "${scm_branch_name}", "${scm_owner}" 
 	
     #chosing API - if persona is set to "developer" then "/api/manifest/update/persona/developer" will be called
     #chosing API - if persona is empty then "/api/manifest/update" will be called
@@ -240,8 +240,8 @@ function validate_values () {
 
 function is_synopsys_config_present () {
     if [ ! -f "$config_file" ]; then
-        printf "${config_file} file does not exist\n"
-        printf "Downloading default ${config_file}\n"
+        printf "%s file does not exist\n", "${config_file}"
+        printf "Downloading default %s\n", "${config_file}"
         if [ -z "$io_manifest_url" ]; then
             wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/io-manifest.yml
         else
