@@ -191,7 +191,7 @@ function loadWorkflow() {
 	
     echo "updating last scan date for perfomed security activities"
     header='Authorization: Bearer '$io_token''
-    scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json "${io_url}/io/api/manifest/update/scandate)
+    scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json ${io_url}/io/api/manifest/update/scandate)
     echo $scandateresponse
 }
 
