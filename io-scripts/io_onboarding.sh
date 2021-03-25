@@ -32,17 +32,17 @@ onBoardingResponse=$(curl --location --request POST "$ioUrl/io/api/applications/
 if [ "$onBoardingResponse" = "TPI Data created/updated successfully" ] ; then
     metadata=`cat $metaPath`
 	
-	calculatorResponse=$(curl --location --request POST "$ioUrl/io/api/calculator/update" \
-	--header 'Content-Type: application/json' \
-	--header "Authorization: Bearer $ioToken" \
-	--data-raw "$metadata");
+    calculatorResponse=$(curl --location --request POST "$ioUrl/io/api/calculator/update" \
+    --header 'Content-Type: application/json' \
+    --header "Authorization: Bearer $ioToken" \
+    --data-raw "$metadata");
 	
-	if [ "$calculatorResponse" != "Updated Successfully" ] ; then
-		echo $calculatorResponse;
-		exit 1;
-	fi
+    if [ "$calculatorResponse" != "Updated Successfully" ] ; then
+        echo $calculatorResponse;
+        exit 1;
+    fi
 	
-	wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2021.01/io-manifest.yml
+    wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/2021.01/io-manifest.yml
     workflow=$(cat io-manifest.yml | sed " s~<<ASSET_ID>>~$assetId~g; s~<<APP_ID>>~$assetId~g")
     # apply the yml with the substituted value
     echo "$workflow" >io-manifest.yml
