@@ -68,7 +68,7 @@ function generateYML () {
         --github.token=*) github_access_token="${i#*=}" ;;
         --gitlab.url=*) gitlab_url="${i#*=}" ;;			      #gitlab
         --gitlab.token=*) gitlab_token="${i#*=}" ;;
-	    --IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
+        --IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
         --polaris.project.name=*) polaris_project_name="${i#*=}" ;;
         --polaris.url=*) polaris_server_url="${i#*=}" ;;
         --polaris.token=*) polaris_access_token="${i#*=}" ;;
