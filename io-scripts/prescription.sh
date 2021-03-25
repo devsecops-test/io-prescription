@@ -36,7 +36,7 @@ function generateYML () {
         case "$i" in
         --io.url=*) io_url="${i#*=}" ;;
         --io.token=*) io_token="${i#*=}" ;;
-	--io.manifest.url=*) io_manifest_url="${i#*=}" ;;
+        --io.manifest.url=*) io_manifest_url="${i#*=}" ;;
         --release.type=*) release_type="${i#*=}" ;;
         --file.change.threshold=*) file_change_threshold="${i#*=}" ;;
         --sast.rescan.threshold=*) sast_rescan_threshold="${i#*=}" ;;
@@ -66,9 +66,9 @@ function generateYML () {
         --github.commit.id=*) github_commit_id="${i#*=}" ;;
         --github.username=*) github_username="${i#*=}" ;;
         --github.token=*) github_access_token="${i#*=}" ;;
-	--gitlab.url=*) gitlab_url="${i#*=}" ;;			      #gitlab
-	--gitlab.token=*) gitlab_token="${i#*=}" ;;
-	--IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
+        --gitlab.url=*) gitlab_url="${i#*=}" ;;			      #gitlab
+        --gitlab.token=*) gitlab_token="${i#*=}" ;;
+	    --IS_SAST_ENABLED=*) is_sast_enabled="${i#*=}" ;;             #polaris
         --polaris.project.name=*) polaris_project_name="${i#*=}" ;;
         --polaris.url=*) polaris_server_url="${i#*=}" ;;
         --polaris.token=*) polaris_access_token="${i#*=}" ;;
@@ -212,7 +212,7 @@ function getIOPrescription() {
 	
     #chosing API - if persona is set to "developer" then "/api/manifest/update/persona/developer" will be called
     #chosing API - if persona is empty then "/api/manifest/update" will be called
-    if [[ -z $persona ]]; then
+    if [ "$persona" = "devsecops" ] ; then
         API="update"
     else
         API="update/persona/$persona"
