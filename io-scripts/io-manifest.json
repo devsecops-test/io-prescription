@@ -10,8 +10,8 @@
       "buildSystem": "Maven",
       "riskMatrixRevision": "Rev1.0",
       "sourceFilePattern": ".*\\+\\+\\+.*(\\.java|\\.jsp)+.*",
-      "sensitivePackagePattern": "<<SENSITIVE_PACKAGE_PATTERN>>",
-      "fileChangeThreshold": "<<FILE_CHANGE_THRESHOLD>>"
+      "sensitivePackagePattern": <<SENSITIVE_PACKAGE_PATTERN>>,
+      "fileChangeThreshold": <<FILE_CHANGE_THRESHOLD>>
    },
    "environment": {
       "scm": "<<SCM_TYPE>>",
