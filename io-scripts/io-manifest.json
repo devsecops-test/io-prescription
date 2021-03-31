@@ -10,8 +10,8 @@
       "buildSystem": "Maven",
       "riskMatrixRevision": "Rev1.0",
       "sourceFilePattern": ".*\\+\\+\\+.*(\\.java|\\.jsp)+.*",
-      "sensitivePackagePattern": <<SENSITIVE_PACKAGE_PATTERN>>,
-      "fileChangeThreshold": <<FILE_CHANGE_THRESHOLD>>
+      "sensitivePackagePattern": "<<SENSITIVE_PACKAGE_PATTERN>>",
+      "fileChangeThreshold": "<<FILE_CHANGE_THRESHOLD>>"
    },
    "environment": {
       "scm": "<<SCM_TYPE>>",
@@ -124,7 +124,7 @@
    "tool_information": [
       {
          "tool_name": "polaris",
-         "enabled": <<IS_SAST_ENABLED>>,
+         "enabled": "<<IS_SAST_ENABLED>>",
          "fields": {
             "project_name": "<<POLARIS_PROJECT_NAME>>",
             "instance_url": "<<POLARIS_SERVER_URL>>",
@@ -133,7 +133,7 @@
       },
       {
          "tool_name": "blackduck",
-         "enabled": <<IS_SCA_ENABLED>>,
+         "enabled": "<<IS_SCA_ENABLED>>",
          "fields": {
             "project_name": "<<BLACKDUCK_PROJECT_NAME>>",
             "instance_url": "<<BLACKDUCK_SERVER_URL>>",
@@ -142,7 +142,7 @@
       },
       {
          "tool_name": "seeker",
-         "enabled": <<IS_DAST_ENABLED>>,
+         "enabled": "<<IS_DAST_ENABLED>>",
          "fields": {
             "project_name": "<<SEEKER_PROJECT_NAME>>",
             "instance_url": "<<SEEKER_SERVER_URL>>",
