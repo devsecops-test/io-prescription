@@ -4,15 +4,24 @@ run() {
     box_line "Synopsys Intelligent Security Scan" "Copyright 2016-2020 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
     
-    config_file="io-manifest.yml"
-    
     for i in "${ARGS[@]}"; do
         case "$i" in
         --stage=*) stage="${i#*=}" ;;
         --workflow.version=*) workflow_version="${i#*=}" ;;
+		--manifest.type=*) manifest_type="${i#*=}" ;;
         *) ;;
         esac
     done
+	
+	if [ -z "$manifest_type" ]; then
+        config_file="io-manifest.yml"
+    fi
+	
+	if [[ "$manifest_type" == "json" ]]; then
+        config_file="io-manifest.json"
+    elif [[ "$manifest_type" == "yml" ]]; then
+        config_file="io-manifest.yml"
+    fi
 	
     #validate stage
     validate_values "STAGE" "$stage"
@@ -90,9 +99,13 @@ function generateYML () {
     
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
-
-    asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
-
+	
+	if [[ "$manifest_type" == "json" ]]; then
+        asset_id_from_yml=$(jq -r '.application.assetId' $config_file)
+    elif [[ "$manifest_type" == "yml" ]]; then
+        asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
+    fi
+	
     if [[ "${asset_id_from_yml}" == "<<ASSET_ID>>" ]]; then
         create_io_asset
     else
@@ -120,10 +133,59 @@ function generateYML () {
     fi
     
     if [ -z "$sensitive_package" ]; then
-        sensitive_package=".*(\\+\\+\\+.*(\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*"
+        sensitive_package='.*(\\\\+\\\\+\\\\+.*(\\\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*'
     fi
-
-    synopsys_io_manifest=$(cat io-manifest.yml |
+	
+	if [[ "$manifest_type" == "json" ]]; then
+        synopsys_io_manifest=$(cat $config_file |
+        sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
+	    s~<<SLACK_TOKEN>>~$slack_token~g; \
+	    s~<<JIRA_PROJECT_NAME>>~$jira_project_name~g; \
+	    s~<<JIRA_ASSIGNEE>>~$jira_assignee~g; \
+	    s~<<JIRA_API_URL>>~$jira_api_url~g; \
+	    s~<<JIRA_ISSUES_QUERY>>~$jira_issues_query~g; \
+	    s~<<JIRA_USERNAME>>~$jira_username~g; \
+	    s~<<JIRA_AUTH_TOKEN>>~$jira_auth_token~g; \
+	    s~<<BITBUCKET_COMMIT_ID>>~$bitbucket_commit_id~g; \
+	    s~<<BITBUCKET_USERNAME>>~$bitbucket_username~g; \
+	    s~<<BITBUCKET_PASSWORD>>~$bitbucket_password~g; \
+	    s~<<GITHUB_OWNER_NAME>>~$github_owner_name~g; \
+	    s~<<GITHUB_REPO_NAME>>~$github_repo_name~g; \
+	    s~<<GITHUB_REF>>~$github_ref~g; \
+	    s~<<GITHUB_COMMIT_ID>>~$github_commit_id~g; \
+	    s~<<GITHUB_USERNAME>>~$github_username~g; \
+	    s~<<GITHUB_ACCESS_TOKEN>>~$github_access_token~g; \
+	    s~<<GITLAB_HOST_URL>>~$gitlab_url~g;\
+	    s~<<GITLAB_TOKEN>>~$gitlab_token~g;\
+	    s~<<POLARIS_PROJECT_NAME>>~$polaris_project_name~g; \
+	    s~<<POLARIS_SERVER_URL>>~$polaris_server_url~g; \
+	    s~<<POLARIS_ACCESS_TOKEN>>~$polaris_access_token~g; \
+	    s~<<BLACKDUCK_PROJECT_NAME>>~$blackduck_project_name~g; \
+	    s~<<BLACKDUCK_SERVER_URL>>~$blackduck_server_url~g; \
+	    s~<<BLACKDUCK_ACCESS_TOKEN>>~$blackduck_access_token~g; \
+	    s~<<SEEKER_PROJECT_NAME>>~$seeker_project_name~g; \
+	    s~<<SEEKER_SERVER_URL>>~$seeker_server_url~g; \
+	    s~<<SEEKER_ACCESS_TOKEN>>~$seeker_access_token~g; \
+	    s~\"<<IS_SAST_ENABLED>>\"~$is_sast_enabled~g; \
+	    s~\"<<IS_SCA_ENABLED>>\"~$is_sca_enabled~g; \
+	    s~\"<<IS_DAST_ENABLED>>\"~$is_dast_enabled~g; \
+	    s~<<APP_ID>>~$asset_id~g; \
+	    s~<<ASSET_ID>>~$asset_id~g; \
+	    s~<<RELEASE_TYPE>>~$release_type~g; \
+	    s~<<SENSITIVE_PACKAGE_PATTERN>>~$sensitive_package~g; \
+	    s~\"<<FILE_CHANGE_THRESHOLD>>\"~$file_change_threshold~g; \
+	    s~\"<<SAST_RESCAN_THRESHOLD>>\"~$sast_rescan_threshold~g; \
+	    s~\"<<SCA_RESCAN_THRESHOLD>>\"~$sca_rescan_threshold~g; \
+	    s~<<SCM_TYPE>>~$scm_type~g; \
+	    s~<<SCM_OWNER>>~$scm_owner~g; \
+	    s~<<SCM_REPO_NAME>>~$scm_repo_name~g; \
+	    s~<<SCM_BRANCH_NAME>>~$scm_branch_name~g")
+		
+		# apply the json with the substituted value
+		echo "$synopsys_io_manifest" >synopsys-io.json
+	
+    elif [[ "$manifest_type" == "yml" ]]; then
+        synopsys_io_manifest=$(cat $config_file |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
 	    s~<<SLACK_TOKEN>>~$slack_token~g; \
 	    s~<<JIRA_PROJECT_NAME>>~$jira_project_name~g; \
@@ -166,11 +228,12 @@ function generateYML () {
 	    s~<<SCM_OWNER>>~$scm_owner~g; \
 	    s~<<SCM_REPO_NAME>>~$scm_repo_name~g; \
 	    s~<<SCM_BRANCH_NAME>>~$scm_branch_name~g")
-    
-    # apply the yml with the substituted value
-    echo "$synopsys_io_manifest" >synopsys-io.yml
-
-    echo "synopsys-io.yml generated"
+		
+		# apply the yml with the substituted value
+		echo "$synopsys_io_manifest" >synopsys-io.yml
+    fi
+	
+    echo "synopsys-io manifest generated"
 }
 
 function loadWorkflow() {
@@ -180,8 +243,13 @@ function loadWorkflow() {
     #checks if WorkflowClient.jar is present
     is_workflow_client_jar_present
     
-    asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
-    curr_date=$(date +'%Y-%m-%d')
+	if [[ "$manifest_type" == "json" ]]; then
+        asset_id_from_yml=$(jq -r '.application.assetId' synopsys-io.json)
+    elif [[ "$manifest_type" == "yml" ]]; then
+        asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
+    fi
+	
+	curr_date=$(date +'%Y-%m-%d')
    
     scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
     if [ "$is_sast_enabled" = true ] ; then
@@ -227,12 +295,18 @@ function getIOPrescription() {
     fi
 
     header='Authorization: Bearer '$io_token''
-
-    #Yaml to Json Conversion
-    cat synopsys-io.yml
-    echo $(ruby -ryaml -rjson -e "puts JSON.pretty_generate(YAML.safe_load(File.read('synopsys-io.yml')))") >data.json
-    cat data.json
-    echo "Getting Prescription"
+    
+	if [[ "$manifest_type" == "json" ]]; then
+        cp synopsys-io.json data.json
+        cat data.json
+    elif [[ "$manifest_type" == "yml" ]]; then
+        #Yaml to Json Conversion
+        cat synopsys-io.yml
+        echo $(ruby -ryaml -rjson -e "puts JSON.pretty_generate(YAML.safe_load(File.read('synopsys-io.yml')))") >data.json
+        cat data.json
+    fi
+	
+	echo "Getting Prescription"
     prescrip=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @data.json ${io_url}/io/api/manifest/${API})
     echo $prescrip
     echo $prescrip >result.json
@@ -251,10 +325,10 @@ function is_synopsys_config_present () {
         printf "%s file does not exist\n", "${config_file}"
         printf "Downloading default %s\n", "${config_file}"
         if [ -z "$io_manifest_url" ]; then
-            wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/io-manifest.yml
+            wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/${config_file}
         else
             wget "$io_manifest_url"
-	fi
+        fi
     fi
 }
 

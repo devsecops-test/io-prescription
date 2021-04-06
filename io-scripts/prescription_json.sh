@@ -123,7 +123,7 @@ function generateYML () {
         sensitive_package=".*(\\+\\+\\+.*(\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*"
     fi
 
-    synopsys_io_manifest=$(cat io-manifest.yml |
+    synopsys_io_manifest=$(cat io-manifest.json |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
 	    s~<<SLACK_TOKEN>>~$slack_token~g; \
 	    s~<<JIRA_PROJECT_NAME>>~$jira_project_name~g; \
@@ -167,6 +167,9 @@ function generateYML () {
 	    s~<<SCM_REPO_NAME>>~$scm_repo_name~g; \
 	    s~<<SCM_BRANCH_NAME>>~$scm_branch_name~g")
     
+	echo "Helloeoe"
+	echo "$synopsys_io_manifest"
+	
     # apply the yml with the substituted value
     echo "$synopsys_io_manifest" >synopsys-io.json
 
