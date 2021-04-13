@@ -5,7 +5,7 @@ for i in "$@"; do
     --io.url=*) ioUrl="${i#*=}" ;;
     --io.token=*) ioToken="${i#*=}" ;;
     --asset.id=*) assetId="${i#*=}" ;;
-	--calculator.meta.path=*) metaPath="${i#*=}" ;;
+    --calculator.meta.path=*) metaPath="${i#*=}" ;;
     *) ;;
     esac
 done
@@ -53,5 +53,3 @@ else
     echo $onBoardingResponse;
     exit 1;
 fi
-
-
