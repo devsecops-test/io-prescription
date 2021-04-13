@@ -8,16 +8,16 @@ run() {
         case "$i" in
         --stage=*) stage="${i#*=}" ;;
         --workflow.version=*) workflow_version="${i#*=}" ;;
-		--manifest.type=*) manifest_type="${i#*=}" ;;
+        --manifest.type=*) manifest_type="${i#*=}" ;;
         *) ;;
         esac
     done
 	
-	if [ -z "$manifest_type" ]; then
+    if [ -z "$manifest_type" ]; then
         config_file="io-manifest.yml"
     fi
 	
-	if [[ "$manifest_type" == "json" ]]; then
+    if [[ "$manifest_type" == "json" ]]; then
         config_file="io-manifest.json"
     elif [[ "$manifest_type" == "yml" ]]; then
         config_file="io-manifest.yml"
@@ -100,7 +100,7 @@ function generateYML () {
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
 	
-	if [[ "$manifest_type" == "json" ]]; then
+    if [[ "$manifest_type" == "json" ]]; then
         asset_id_from_yml=$(jq -r '.application.assetId' $config_file)
     elif [[ "$manifest_type" == "yml" ]]; then
         asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
@@ -111,6 +111,7 @@ function generateYML () {
     else
         asset_id=${asset_id_from_yml}
     fi
+    
     #default values
     if [ -z "$file_change_threshold" ]; then
         file_change_threshold=20
@@ -136,7 +137,7 @@ function generateYML () {
         sensitive_package='.*(\\\\+\\\\+\\\\+.*(\\\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*'
     fi
 	
-	if [[ "$manifest_type" == "json" ]]; then
+    if [[ "$manifest_type" == "json" ]]; then
         synopsys_io_manifest=$(cat $config_file |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
 	    s~<<SLACK_TOKEN>>~$slack_token~g; \
@@ -180,10 +181,8 @@ function generateYML () {
 	    s~<<SCM_OWNER>>~$scm_owner~g; \
 	    s~<<SCM_REPO_NAME>>~$scm_repo_name~g; \
 	    s~<<SCM_BRANCH_NAME>>~$scm_branch_name~g")
-		
-		# apply the json with the substituted value
-		echo "$synopsys_io_manifest" >synopsys-io.json
-	
+        # apply the json with the substituted value
+        echo "$synopsys_io_manifest" >synopsys-io.json	
     elif [[ "$manifest_type" == "yml" ]]; then
         synopsys_io_manifest=$(cat $config_file |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
@@ -228,9 +227,8 @@ function generateYML () {
 	    s~<<SCM_OWNER>>~$scm_owner~g; \
 	    s~<<SCM_REPO_NAME>>~$scm_repo_name~g; \
 	    s~<<SCM_BRANCH_NAME>>~$scm_branch_name~g")
-		
-		# apply the yml with the substituted value
-		echo "$synopsys_io_manifest" >synopsys-io.yml
+        # apply the yml with the substituted value
+        echo "$synopsys_io_manifest" >synopsys-io.yml
     fi
 	
     echo "synopsys-io manifest generated"
@@ -243,13 +241,13 @@ function loadWorkflow() {
     #checks if WorkflowClient.jar is present
     is_workflow_client_jar_present
     
-	if [[ "$manifest_type" == "json" ]]; then
+    if [[ "$manifest_type" == "json" ]]; then
         asset_id_from_yml=$(jq -r '.application.assetId' synopsys-io.json)
     elif [[ "$manifest_type" == "yml" ]]; then
         asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
     fi
 	
-	curr_date=$(date +'%Y-%m-%d')
+    curr_date=$(date +'%Y-%m-%d')
    
     scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
     if [ "$is_sast_enabled" = true ] ; then
@@ -296,7 +294,7 @@ function getIOPrescription() {
 
     header='Authorization: Bearer '$io_token''
     
-	if [[ "$manifest_type" == "json" ]]; then
+    if [[ "$manifest_type" == "json" ]]; then
         cp synopsys-io.json data.json
         cat data.json
     elif [[ "$manifest_type" == "yml" ]]; then
@@ -306,7 +304,7 @@ function getIOPrescription() {
         cat data.json
     fi
 	
-	echo "Getting Prescription"
+    echo "Getting Prescription"
     prescrip=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @data.json ${io_url}/io/api/manifest/${API})
     echo $prescrip
     echo $prescrip >result.json
