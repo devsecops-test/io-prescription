@@ -86,6 +86,10 @@ buildbreaker:
     severity: medium
 # for WF client
 tool_information:
+- tool_name: coverity
+  enabled: false
+  fields:
+    file_path: coverity-results.json
 - tool_name: polaris
   enabled: <<IS_SAST_ENABLED>>
   fields:
