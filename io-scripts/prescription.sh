@@ -1,7 +1,7 @@
 #!/bin/bash
 
 run() {
-    box_line "Synopsys Intelligent Security Scan" "Copyright 2016-2020 Synopsys, Inc. All rights reserved worldwide."
+    box_line "Synopsys Intelligent Security Scan" "Copyright 2020-2021 Synopsys, Inc. All rights reserved worldwide."
     allargs="${ARGS[@]}"
     
     for i in "${ARGS[@]}"; do
@@ -131,6 +131,23 @@ function generateYML () {
         sensitive_package='.*(\\\\+\\\\+\\\\+.*(\\\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*'
     fi
     
+    if [[ "${stage}" == "IO" ]]; then
+        #condition to retrieve release value based on manifest type
+	if [[ "$manifest_type" == "json" ]]; then
+            release_type_from_yml=$(jq -r '.application.release' $config_file)
+        elif [[ "$manifest_type" == "yml" ]]; then
+            release_type_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["release"]' $config_file)
+        fi
+	
+	#validate the release value
+	if [[ "${release_type_from_yml}" == "<<RELEASE_TYPE>>" ]]; then
+		release_type="major"
+	elif [ `echo $release_type_from_yml | tr [:upper:] [:lower:]` != "major" -a `echo $release_type_from_yml | tr [:upper:] [:lower:]` != "minor" ]; then
+		exit_program "Error: Invalid release type given as input, Accepted values are major/minor with case insenstive."
+	fi
+    fi
+    
+    #create a asset in IO if the persona is not developer
     if [[ "${asset_id_from_yml}" == "<<ASSET_ID>>" && "${persona}" != "developer" ]]; then
         create_io_asset
     else
@@ -326,7 +343,7 @@ function is_synopsys_config_present () {
         printf "%s file does not exist\n", "${config_file}"
         printf "Downloading default %s\n", "${config_file}"
         if [ -z "$io_manifest_url" ]; then
-            wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/${config_file}
+            wget "https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/${config_file}"
         else
             wget "$io_manifest_url"
         fi
@@ -337,7 +354,7 @@ function is_workflow_client_jar_present () {
     if [ ! -f "WorkflowClient.jar" ]; then
         printf "WorkflowClient.jar file does not exist\n"
         printf "Downloading default WorkflowClient.jar\n"
-        wget https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/WorkflowClient.jar
+        wget "https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/WorkflowClient.jar"
     fi
 }
 
