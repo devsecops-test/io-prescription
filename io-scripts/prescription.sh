@@ -105,13 +105,7 @@ function generateYML () {
     elif [[ "$manifest_type" == "yml" ]]; then
         asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
     fi
-	
-    if [[ "${asset_id_from_yml}" == "<<ASSET_ID>>" ]]; then
-        create_io_asset
-    else
-        asset_id=${asset_id_from_yml}
-    fi
-    
+
     #default values
     if [ -z "$file_change_threshold" ]; then
         file_change_threshold=20
@@ -136,7 +130,13 @@ function generateYML () {
     if [ -z "$sensitive_package" ]; then
         sensitive_package='.*(\\\\+\\\\+\\\\+.*(\\\\/((a|A)pp|(c|C)rypto|(a|A)uth|(s|S)ec|(l|L)ogin|(p|P)ass|(o|O)auth|(t|T)oken|(i|I)d|(c|C)red|(s|S)aml|(c|C)ognito|(s|S)ignin|(s|S)ignup|(a|A)ccess))).*'
     fi
-	
+    
+    if [[ "${asset_id_from_yml}" == "<<ASSET_ID>>" && "${persona}" != "developer" ]]; then
+        create_io_asset
+    else
+        asset_id=${asset_id_from_yml}
+    fi
+    
     if [[ "$manifest_type" == "json" ]]; then
         synopsys_io_manifest=$(cat $config_file |
         sed " s~<<SLACK_CHANNEL_ID>>~$slack_channel_id~g; \
@@ -248,25 +248,28 @@ function loadWorkflow() {
     fi
 	
     curr_date=$(date +'%Y-%m-%d')
-   
-    scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
-    if [ "$is_sast_enabled" = true ] ; then
-       scandate_json="$scandate_json\"sast\": {\"lastScanDate\": \"${curr_date}\"}"
-    fi
-    if [ "$is_sca_enabled" = true ] && [ "$is_sast_enabled" = true ] ; then
-       scandate_json="$scandate_json,"
-    fi
-    if [ "$is_sca_enabled" = true ] ; then
-       scandate_json="$scandate_json\"sca\": {\"lastScanDate\": \"${curr_date}\"}"
-    fi
-    scandate_json="$scandate_json}}"
-    echo "$scandate_json" >scandate.json
-    echo "$scandate_json"
+    
+    #update scan date
+    if [[ "${persona}" != "developer" ]]; then
+        scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
+        if [ "$is_sast_enabled" = true ] ; then
+           scandate_json="$scandate_json\"sast\": {\"lastScanDate\": \"${curr_date}\"}"
+        fi
+        if [ "$is_sca_enabled" = true ] && [ "$is_sast_enabled" = true ] ; then
+           scandate_json="$scandate_json,"
+        fi
+        if [ "$is_sca_enabled" = true ] ; then
+           scandate_json="$scandate_json\"sca\": {\"lastScanDate\": \"${curr_date}\"}"
+        fi
+        scandate_json="$scandate_json}}"
+        echo "$scandate_json" >scandate.json
+        echo "$scandate_json"
 	
-    echo "updating last scan date for perfomed security activities"
-    header='Authorization: Bearer '$io_token''
-    scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json ${io_url}/io/api/manifest/update/scandate)
-    echo $scandateresponse
+        echo "Updating last scan date for perfomed security activities"
+        header='Authorization: Bearer '$io_token''
+        scandateresponse=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @scandate.json ${io_url}/io/api/manifest/update/scandate)
+        echo $scandateresponse
+    fi
 }
 
 function getIOPrescription() {
