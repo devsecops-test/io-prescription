@@ -250,8 +250,8 @@ function generateYML () {
         # apply the yml with the substituted value
         echo "$synopsys_io_manifest" >synopsys-io.yml
     fi
-	
-    echo "synopsys-io manifest generated"
+    printf "IO Manifest Type: ${manifest_type}\n"	
+    printf "IO manifest file generated"
 }
 
 function loadWorkflow() {
@@ -303,7 +303,6 @@ function getIOPrescription() {
     validate_values "REPOSITORY_NAME" "$scm_repo_name"
     validate_values "BRANCH_NAME" "$scm_branch_name"
     
-    printf "IO Manifest Type: ${manifest_type}\n"
     printf "IO Asset ID: ${asset_id}\n"
     printf "SCM TYPE: ${scm_type}\n"
     printf "Using the repository ${scm_repo_name} and branch ${scm_branch_name}. Action triggered by ${scm_owner}\n\n"
