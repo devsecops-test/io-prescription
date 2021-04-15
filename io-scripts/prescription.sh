@@ -252,23 +252,24 @@ function generateYML () {
 }
 
 function loadWorkflow() {
+    echo "Triggering IO Workflowengine"
     #validates mandatory arguments for IO
     validate_values "WORKFLOW_SERVER_URL" "$workflow_url"
     
     #checks if WorkflowClient.jar is present
     is_workflow_client_jar_present
     
-    if [[ "$manifest_type" == "json" ]]; then
-        asset_id_from_yml=$(jq -r '.application.assetId' synopsys-io.json)
-    elif [[ "$manifest_type" == "yml" ]]; then
-        asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
-    fi
-	
-    curr_date=$(date +'%Y-%m-%d')
-    
     #update scan date
     if [[ "${persona}" != "developer" ]]; then
-        scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
+        if [[ "$manifest_type" == "json" ]]; then
+           asset_id_from_yml=$(jq -r '.application.assetId' synopsys-io.json)
+        elif [[ "$manifest_type" == "yml" ]]; then
+            asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
+        fi
+	
+        curr_date=$(date +'%Y-%m-%d')
+	
+	scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
         if [ "$is_sast_enabled" = true ] ; then
            scandate_json="$scandate_json\"sast\": {\"lastScanDate\": \"${curr_date}\"}"
         fi
@@ -290,8 +291,7 @@ function loadWorkflow() {
 }
 
 function getIOPrescription() {
-
-    echo "Inside Prescription"
+    echo "Getting IO Prescription"
 	
     #validates mandatory arguments for IO
     validate_values "IO_ASSET_ID" "$asset_id"
@@ -343,9 +343,9 @@ function is_synopsys_config_present () {
         printf "%s file does not exist\n", "${config_file}"
         printf "Downloading default %s\n", "${config_file}"
         if [ -z "$io_manifest_url" ]; then
-            wget "https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/${config_file}"
+            wget "https://raw.githubusercontent.com/synopsys-sig/io-artifacts/${workflow_version}/${config_file}"
         else
-            wget "$io_manifest_url"
+            wget "$io_manifest_url" -O $config_file
         fi
     fi
 }
@@ -354,7 +354,7 @@ function is_workflow_client_jar_present () {
     if [ ! -f "WorkflowClient.jar" ]; then
         printf "WorkflowClient.jar file does not exist\n"
         printf "Downloading default WorkflowClient.jar\n"
-        wget "https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/WorkflowClient.jar"
+        wget "https://github.com/synopsys-sig/io-artifacts/releases/download/${workflow_version}/WorkflowClient.jar"
     fi
 }
 
