@@ -327,7 +327,7 @@ function getIOPrescription() {
         cat data.json
     fi
 	
-    printf "\nIO Prescription -->"
+    printf "\nIO Prescription -->\n"
     prescrip=$(curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -H "${header}" -d @data.json ${io_url}/io/api/manifest/${API})
     echo $prescrip
     echo $prescrip >result.json
