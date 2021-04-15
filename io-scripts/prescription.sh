@@ -99,12 +99,6 @@ function generateYML () {
     
     #checks if the synopsys-io.yml present
     is_synopsys_config_present
-	
-    if [[ "$manifest_type" == "json" ]]; then
-        asset_id_from_yml=$(jq -r '.application.assetId' $config_file)
-    elif [[ "$manifest_type" == "yml" ]]; then
-        asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
-    fi
 
     #default values
     if [ -z "$file_change_threshold" ]; then
@@ -147,11 +141,20 @@ function generateYML () {
 	fi
     fi
     
+    if [[ "$manifest_type" == "json" ]]; then
+        asset_id_from_yml=$(jq -r '.application.assetId' $config_file)
+    elif [[ "$manifest_type" == "yml" ]]; then
+        asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' $config_file)
+    fi
+    
+    #Use ASSED_ID from manifest file if not default value
+    if [[ "${asset_id_from_yml}" != "<<ASSET_ID>>" ]]; then
+        asset_id=${asset_id_from_yml}
+    fi
+    
     #create a asset in IO if the persona is not developer
     if [[ "${asset_id_from_yml}" == "<<ASSET_ID>>" && "${persona}" != "developer" ]]; then
         create_io_asset
-    else
-        asset_id=${asset_id_from_yml}
     fi
     
     if [[ "$manifest_type" == "json" ]]; then
