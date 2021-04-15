@@ -322,7 +322,8 @@ function getIOPrescription() {
         cat data.json
     elif [[ "$manifest_type" == "yml" ]]; then
         #Yaml to Json Conversion
-        echo $(ruby -ryaml -rjson -e "puts JSON.pretty_generate(YAML.safe_load(File.read('synopsys-io.yml')))") >data.json
+        cat synopsys-io.yml
+	echo $(ruby -ryaml -rjson -e "puts JSON.pretty_generate(YAML.safe_load(File.read('synopsys-io.yml')))") >data.json
         cat data.json
     fi
 	
