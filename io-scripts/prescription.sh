@@ -14,7 +14,7 @@ run() {
     done
 	
     if [ -z "$manifest_type" ]; then
-        config_file="io-manifest.yml"
+        manifest_type="yml"
     fi
 	
     if [[ "$manifest_type" == "json" ]]; then
