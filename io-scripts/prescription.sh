@@ -251,7 +251,7 @@ function generateYML () {
         echo "$synopsys_io_manifest" >synopsys-io.yml
     fi
     printf "IO Manifest Type: ${manifest_type}\n"	
-    printf "IO manifest file generated"
+    printf "IO manifest file generated\n"
 }
 
 function loadWorkflow() {
