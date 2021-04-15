@@ -258,17 +258,17 @@ function loadWorkflow() {
     #checks if WorkflowClient.jar is present
     is_workflow_client_jar_present
     
-    if [[ "$manifest_type" == "json" ]]; then
-        asset_id_from_yml=$(jq -r '.application.assetId' synopsys-io.json)
-    elif [[ "$manifest_type" == "yml" ]]; then
-        asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
-    fi
-	
-    curr_date=$(date +'%Y-%m-%d')
-    
     #update scan date
     if [[ "${persona}" != "developer" ]]; then
-        scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
+        if [[ "$manifest_type" == "json" ]]; then
+           asset_id_from_yml=$(jq -r '.application.assetId' synopsys-io.json)
+        elif [[ "$manifest_type" == "yml" ]]; then
+            asset_id_from_yml=$(ruby -r yaml -e 'puts YAML.load_file(ARGV[0])["application"]["assetId"]' synopsys-io.yml)
+        fi
+	
+        curr_date=$(date +'%Y-%m-%d')
+	
+	scandate_json="{\"assetId\": \"${asset_id_from_yml}\",\"activities\":{"
         if [ "$is_sast_enabled" = true ] ; then
            scandate_json="$scandate_json\"sast\": {\"lastScanDate\": \"${curr_date}\"}"
         fi
