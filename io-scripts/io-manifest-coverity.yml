@@ -89,14 +89,14 @@ buildbreaker:
 # for WF client
 tool_information:
 - tool_name: coverity
-  enabled: false
+  enabled: <<IS_SAST_ENABLED>>
   fields:
     file_path: coverity-results.json
     instance_url: <<COVERITY_SERVER_URL>>
     username: <<COVERITY_USERNAME>>
     password: <<COVERITY_PASSWORD>>
 - tool_name: polaris
-  enabled: <<IS_SAST_ENABLED>>
+  enabled: false
   fields:
     project_name: <<POLARIS_PROJECT_NAME>>
     instance_url: <<POLARIS_SERVER_URL>>
