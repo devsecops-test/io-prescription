@@ -363,7 +363,7 @@ function is_synopsys_config_present () {
         printf "%s file does not exist\n", "${config_file}"
         printf "Downloading default %s\n", "${config_file}"
         if [ -z "$io_manifest_url" ]; then
-            wget "https://raw.githubusercontent.com/synopsys-sig/io-artifacts/${workflow_version}/${config_file}"
+            wget "https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/${config_file}"
         else
             wget "$io_manifest_url" -O $config_file
         fi
