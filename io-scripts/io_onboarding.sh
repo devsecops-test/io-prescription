@@ -62,7 +62,7 @@ if [ "$onBoardingResponse" = "TPI Data created/updated successfully" ] ; then
         exit 1;
     fi
 	
-    wget "https://raw.githubusercontent.com/synopsys-sig/io-artifacts/${workflow_version}/${config_file}"
+    wget "https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/${workflow_version}/${config_file}"
     workflow=$(cat ${config_file} | sed " s~<<ASSET_ID>>~$assetId~g; s~<<APP_ID>>~$assetId~g")
     # apply the yml with the substituted value
     echo "$workflow" >${config_file}
